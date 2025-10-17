@@ -26,12 +26,40 @@ import {
 } from "@deemlol/next-icons";
 import { Tooltip } from "@heroui/tooltip";
 import { Pagination } from "@heroui/pagination";
+import ModalForm1 from "./create_form_1/page";
+import ModalForm2 from "./create_form_2/page";
+import ModalForm3 from "./create_form_3/page";
+import useHook from "./useHook";
 
 export default function page() {
+  const {
+    modalRef,
+    modalForm1,
+    setModalForm1,
+    modalForm2,
+    setModalForm2,
+    modalForm3,
+    setModalForm3,
+  } = useHook();
   return (
     <div className="border rounded-xl border-divider px-6 py-6 h-full">
       <h1 className="mb-4 text-2xl text-center">หน้าเพิ่มรายการ</h1>
       <div className="">
+        <ModalForm1
+          openForm1={modalForm1}
+          modalRef={modalRef}
+          closeForm1={() => setModalForm1(false)}
+        />
+        <ModalForm2
+          openForm2={modalForm2}
+          modalRef={modalRef}
+          closeForm2={() => setModalForm2(false)}
+        />
+        <ModalForm3
+          openForm3={modalForm3}
+          modalRef={modalRef}
+          closeForm3={() => setModalForm3(false)}
+        />
         <div className="flex justify-end mb-4 gap-4">
           <Dropdown size="lg" classNames={{ base: "right-[20px]" }}>
             <DropdownTrigger>
@@ -91,7 +119,8 @@ export default function page() {
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Dropdown size="lg" classNames={{ base: "right-[20px]" }}>
+
+          <Dropdown  size="sm" classNames={{ base: "right-[20px]",}}>
             <DropdownTrigger>
               <Button
                 variant="flat"
@@ -103,19 +132,22 @@ export default function page() {
             </DropdownTrigger>
             <DropdownMenu aria-label="Static Actions " variant="faded">
               <DropdownItem
-                key="new"
+                onPress={() => setModalForm1(true)}
+                key="form1"
                 startContent={<FileText className="text-default-500" />}
               >
                 Form 1
               </DropdownItem>
               <DropdownItem
-                key="copy"
+                onPress={() => setModalForm2(true)}
+                key="form2"
                 startContent={<FileText className="text-default-500" />}
               >
                 Form 2
               </DropdownItem>
               <DropdownItem
-                key="edit"
+                onPress={() => setModalForm3(true)}
+                key="form3"
                 startContent={<FileText className="text-default-500" />}
               >
                 Form 3
