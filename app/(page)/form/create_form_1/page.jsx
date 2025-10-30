@@ -11,8 +11,29 @@ import {
 } from "@heroui/modal";
 import { Radio, RadioGroup } from "@heroui/radio";
 import React from "react";
+import useHook from "./useHook";
+import Sign01 from "./signature01/page";
+import Sign02 from "./signature02/page";
+import Sign03 from "./signature03/page";
+import { p, span } from "framer-motion/client";
+import { Edit3 } from "@deemlol/next-icons";
 
 export default function page({ openForm1, closeForm1, modalRef }) {
+  const {
+    modalRefSign,
+    openSign01,
+    openSign02,
+    openSign03,
+    setOpenSign01,
+    setOpenSign02,
+    setOpenSign03,
+    signature,
+    signature2,
+    signature3,
+    handleSaveSignature,
+    handleSaveSignature2,
+    handleSaveSignature3,
+  } = useHook();
   return (
     <div>
       <Modal
@@ -185,32 +206,115 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                   </RadioGroup>
                   <span>จึงได้ลงลายมือชื่อไว้เป็นหลักฐาน</span>
 
-                  <div className="grid grid-cols-2 gap-3 mt-2">
-                    <div>
-                      <span>
-                        ลงชื่อ.........................ผู้ป่วย/ตัวแทนผู้ป่วย
-                      </span>
+                  <div className="grid grid-cols-1 gap-3 mt-2 ">
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>ผู้ป่วย/ตัวแทนผู้ป่วย</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature && (
+                            <span>.............................</span>
+                          )}
+                          {signature && (
+                            <img
+                              src={signature}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign01(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
+
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>แพทย์</span>
+                      <span>ลงชื่อ.........................</span>
                       <span className="block">
                         (.............ชื่อ..............)
                       </span>
                     </div>
-                    <div>
-                      <span>ลงชื่อ.........................แพทย์</span>
-                      <span className="block">
-                        (.............ชื่อ..............)
-                      </span>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>นักรังสีแพทย์</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature2 && (
+                            <span>.............................</span>
+                          )}
+                          {signature2 && (
+                            <img
+                              src={signature2}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign02(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
+
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
                     </div>
-                    <div>
-                      <span>ลงชื่อ.........................นักรังสีแพทย์</span>
-                      <span className="block">
-                        (.............ชื่อ..............)
-                      </span>
-                    </div>
-                    <div>
-                      <span>ลงชื่อ.........................พยาบาล</span>
-                      <span className="block">
-                        (.............ชื่อ..............)
-                      </span>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>พยาบาล</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature3 && (
+                            <span>.............................</span>
+                          )}
+                          {signature3 && (
+                            <img
+                              src={signature3}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign03(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
+
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
                     </div>
                   </div>
                   <DatePicker
@@ -251,6 +355,30 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                   <Input label="Contrast media" />
                   <Input label="ปริมาณ (CC)" />
                 </section>
+                <Sign01
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign01}
+                  onClose={() => {
+                    setOpenSign01(false);
+                  }}
+                  onSave={handleSaveSignature}
+                />
+                <Sign02
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign02}
+                  onClose={() => {
+                    setOpenSign02(false);
+                  }}
+                  onSave={handleSaveSignature2}
+                />
+                <Sign03
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign03}
+                  onClose={() => {
+                    setOpenSign03(false);
+                  }}
+                  onSave={handleSaveSignature3}
+                />
               </ModalBody>
 
               <ModalFooter>
