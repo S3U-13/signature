@@ -1,4 +1,5 @@
 "use client";
+import { addToast } from "@heroui/toast";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function useHook({ onSave, isOpen, onClose }) {
@@ -29,45 +30,51 @@ export default function useHook({ onSave, isOpen, onClose }) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#000";
+    ctx.imageSmoothingEnabled = false; // ✅ ปิดการเบลอโดย browser
 
     let isDrawing = false;
-    const points = []; // เก็บจุดลาก
+    let lastX = 0;
+    let lastY = 0;
 
     const startDraw = (e) => {
       isDrawing = true;
       const rect = canvas.getBoundingClientRect();
-      points.push({
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        pressure: e.pressure || 0.5,
-      });
+      lastX = e.clientX - rect.left;
+      lastY = e.clientY - rect.top;
     };
+
+    let lastWidth = 1.5; // เก็บความหนาเส้นก่อนหน้า (เริ่มต้นกลางๆ)
 
     const draw = (e) => {
       if (!isDrawing) return;
+
       const rect = canvas.getBoundingClientRect();
-      const point = {
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-        pressure: e.pressure || 0.5,
-      };
-      points.push(point);
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
 
-      if (points.length < 3) return; // ต้องมีอย่างน้อย 3 จุดสำหรับ Bezier
+      // 🔹 อ่านแรงกด (ถ้าไม่มีใช้ 0.5)
+      const pressure = e.pressure || 0.5;
 
-      // ใช้ 3 จุดสุดท้ายสร้าง Bezier curve
-      const [p0, p1, p2] = points.slice(-3);
+      // 🔹 คำนวณความหนาเป้าหมาย (min 0.5px → max 5px)
+      const targetWidth = 0.5 + pressure * 5;
 
+      // 🔹 ปรับความหนาแบบ smooth (lerp)
+      const smoothing = 0.2; // ค่ามาก = ปรับไว ค่าน้อย = ลื่นขึ้น
+      const newWidth = lastWidth + (targetWidth - lastWidth) * smoothing;
+
+      ctx.lineWidth = newWidth;
       ctx.beginPath();
-      ctx.moveTo(p0.x, p0.y);
-      ctx.lineWidth = 0.5 + p1.pressure * 4.5; // ปรับตามแรงกด
-      ctx.quadraticCurveTo(p1.x, p1.y, p2.x, p2.y);
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
       ctx.stroke();
+
+      lastX = x;
+      lastY = y;
+      lastWidth = newWidth; // เก็บไว้ใช้ในรอบต่อไป
     };
 
     const stopDraw = () => {
       isDrawing = false;
-      points.length = 0; // ล้างจุด
     };
 
     canvas.addEventListener("pointerdown", startDraw);
@@ -115,7 +122,13 @@ export default function useHook({ onSave, isOpen, onClose }) {
     }
 
     if (!hasInk) {
-      alert("กรุณาเซ็นก่อนบันทึก");
+      // alert("กรุณาเซ็นก่อนบันทึก");
+      addToast({
+        title: "เตือน",
+        description: "กรุณาเซ็นก่อนบันทึก",
+        color: "warning",
+        variant: "solid",
+      });
       return;
     }
 

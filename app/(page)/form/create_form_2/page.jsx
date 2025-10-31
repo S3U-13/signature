@@ -11,8 +11,28 @@ import {
 } from "@heroui/modal";
 import { Radio, RadioGroup } from "@heroui/radio";
 import React from "react";
+import useHook from "./useHook";
+import Sign01 from "./signature01/page";
+import Sign02 from "./signature02/page";
+import Sign03 from "./signature03/page";
+import { Edit3 } from "@deemlol/next-icons";
 
 export default function page({ openForm2, closeForm2, modalRef }) {
+  const {
+    modalRefSign,
+    openSign01,
+    openSign02,
+    openSign03,
+    setOpenSign01,
+    setOpenSign02,
+    setOpenSign03,
+    signature,
+    signature2,
+    signature3,
+    handleSaveSignature,
+    handleSaveSignature2,
+    handleSaveSignature3,
+  } = useHook();
   return (
     <div>
       <Modal
@@ -108,34 +128,150 @@ export default function page({ openForm2, closeForm2, modalRef }) {
                   </h3>
 
                   <div className="space-y-1">
-                    <p>
-                      ผู้ให้ข้อมูล ................................ ตำเเหน่ง
-                      แพทย์ / พยาบาล
-                    </p>
-                    <p>(...........................................)</p>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>ผู้ให้ข้อมูล แพทย์ / พยาบาล</span>
+                      <span>ลงชื่อ.........................</span>
+                      <span className="block">
+                        (.............ชื่อ..............)
+                      </span>
+                    </div>
 
-                    <p>
-                      ผู้รับข้อมูล ................................ ผู้ป่วย หรือ
-                      ผู้เเทนโดยชอบธรรมด้วยกฏหมาย
-                    </p>
-                    <p>(...........................................)</p>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>
+                        ผู้รับข้อมูล ผู้ป่วย หรือ ผู้เเทนโดยชอบธรรมด้วยกฏหมาย
+                      </span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature && (
+                            <span>.............................</span>
+                          )}
+                          {signature && (
+                            <img
+                              src={signature}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign01(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
 
-                    <p>
-                      พยานฝ่ายผู้ป่วย ................................
-                      ปุ่มเพิ่มลายเซ็น
-                    </p>
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>พยานฝ่ายผู้ป่วย</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature2 && (
+                            <span>.............................</span>
+                          )}
+                          {signature2 && (
+                            <img
+                              src={signature2}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign02(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
+                      <RadioGroup orientation="horizontal">
+                        <Radio value="y">
+                          ไม่มีพยานฝ่ายผู้ป่วย (เนื่องจากผู้ป่วยมาคนเดียว)
+                        </Radio>
+                      </RadioGroup>
 
-                    <RadioGroup orientation="horizontal">
-                      <Radio value="y">
-                        ไม่มีพยานฝ่ายผู้ป่วย (เนื่องจากผู้ป่วยมาคนเดียว)
-                      </Radio>
-                    </RadioGroup>
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
+                      <span>พยานฝ่ายเจ้าหน้าที่</span>
+                      <div className="flex gap-2 items-center">
+                        <span className="flex gap-2 items-center">
+                          ลงชื่อ{" "}
+                          {!signature3 && (
+                            <span>.............................</span>
+                          )}
+                          {signature3 && (
+                            <img
+                              src={signature3}
+                              alt="signature"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                            />
+                          )}
+                        </span>
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          color="secondary"
+                          variant="flat"
+                          onPress={() => setOpenSign03(true)}
+                        >
+                          <Edit3 className="size-5" />
+                        </Button>
+                      </div>
 
-                    <p>(...........................................)</p>
-                    <p>พยานฝ่ายเจ้าหน้าที่ ................................</p>
-                    <p>(...........................................) ตำแหน่ง</p>
+                      <Input
+                        className="max-w-1/2"
+                        size="sm"
+                        label="ชื่อ"
+                        type="text"
+                      />
+                      <span>ตำเเหน่ง</span>
+                    </div>
                   </div>
                 </section>
+                <Sign01
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign01}
+                  onClose={() => {
+                    setOpenSign01(false);
+                  }}
+                  onSave={handleSaveSignature}
+                />
+                <Sign02
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign02}
+                  onClose={() => {
+                    setOpenSign02(false);
+                  }}
+                  onSave={handleSaveSignature2}
+                />
+                <Sign03
+                  modalRefSign={modalRefSign}
+                  isOpen={openSign03}
+                  onClose={() => {
+                    setOpenSign03(false);
+                  }}
+                  onSave={handleSaveSignature3}
+                />
               </ModalBody>
 
               {/* Footer */}

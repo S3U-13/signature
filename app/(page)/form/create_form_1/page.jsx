@@ -219,7 +219,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                             <img
                               src={signature}
                               alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
                             />
                           )}
                         </span>
@@ -260,7 +260,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                             <img
                               src={signature2}
                               alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
                             />
                           )}
                         </span>
@@ -294,7 +294,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                             <img
                               src={signature3}
                               alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[50px]"
+                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
                             />
                           )}
                         </span>
