@@ -22,6 +22,7 @@ import {
   FileText,
   PlusCircle,
   Save,
+  Search,
   Slash,
 } from "@deemlol/next-icons";
 import { Tooltip } from "@heroui/tooltip";
@@ -30,6 +31,8 @@ import ModalForm1 from "./create_form_1/page";
 import ModalForm2 from "./create_form_2/page";
 import ModalForm3 from "./create_form_3/page";
 import useHook from "./useHook";
+import { Input } from "@heroui/input";
+import { div } from "framer-motion/client";
 
 export default function page() {
   const {
@@ -42,9 +45,87 @@ export default function page() {
     setModalForm3,
   } = useHook();
   return (
-    <div className="border rounded-xl border-divider px-6 py-6 h-full">
-      <h1 className="mb-4 text-2xl text-center">หน้าเพิ่มรายการ</h1>
-      <div className="">
+    <div className="h-full flex flex-col justify-center items-center">
+      <div className="w-full max-w-5xl border border-divider shadow-sm rounded-2xl p-4">
+        {/* Title */}
+        <div className="text-center mb-4">
+          <h1 className="text-3xl font-semibold ">หน้าค้นหารายการ</h1>
+          <p className=" text-sm mt-2">
+            ค้นหาและจัดการข้อมูลแบบฟอร์มต่าง ๆ ภายในระบบ
+          </p>
+        </div>
+
+        {/* Search Section */}
+        <div className="flex flex-col sm:flex-row justify-end items-center">
+          <div className="flex items-center gap-2 w-full sm:w-1/2">
+            <Input
+              size="sm"
+              label="ค้นหา"
+              placeholder="กรอก HN ...."
+              variant="flat"
+            />
+            <Button isIconOnly color="secondary" variant="solid">
+              <Search size={16} color="#FFFFFF" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Table Section */}
+        <div className="overflow-x-auto mt-4 rounded-lg p-2">
+          <Table
+            aria-label="ตารางรายการ"
+            className="min-w-full text-sm"
+            classNames={{
+              th: "py-4 text-md font-semibold",
+              td: "py-3",
+            }}
+          >
+            <TableHeader>
+              <TableColumn>ID</TableColumn>
+              <TableColumn>HN</TableColumn>
+              <TableColumn>ชื่อ-นามสกุล</TableColumn>
+              <TableColumn>ประเภทรายการ</TableColumn>
+              <TableColumn className="text-center">ACTION</TableColumn>
+            </TableHeader>
+
+            <TableBody emptyContent="ไม่พบข้อมูล">
+              <TableRow key="1">
+                <TableCell>1</TableCell>
+                <TableCell>6815347</TableCell>
+                <TableCell>Tony Reichert</TableCell>
+                <TableCell>
+                  ใบรับทราบข้อมูลเเละยินยอมรับการรักษาด้วยการฉายรังสี
+                </TableCell>
+                <TableCell className="flex justify-center">
+                  <Tooltip color="default" content="แก้ไขข้อมูล">
+                    <Button
+                      size="sm"
+                      isIconOnly
+                      variant="flat"
+                      className="hover:bg-gray-200 transition-colors"
+                      onPress={() => setModalForm1(true)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-5 h-5 text-gray-600"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                        />
+                      </svg>
+                    </Button>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
         <ModalForm1
           openForm1={modalForm1}
           modalRef={modalRef}
@@ -59,323 +140,6 @@ export default function page() {
           openForm3={modalForm3}
           modalRef={modalRef}
           closeForm3={() => setModalForm3(false)}
-        />
-        <div className="flex justify-end mb-4 gap-4">
-          <Dropdown size="lg" classNames={{ base: "right-[20px]" }}>
-            <DropdownTrigger>
-              <Button
-                variant="flat"
-                color="default"
-                endContent={
-                  <ChevronDown className="text-default-500" size={20} />
-                }
-              >
-                Columns
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem key="id">id</DropdownItem>
-              <DropdownItem key="pat">hn</DropdownItem>
-              <DropdownItem key="patvisit">pat visit id</DropdownItem>
-              <DropdownItem key="patreg">pat reg id</DropdownItem>
-              <DropdownItem key="patient name">patient name</DropdownItem>
-              <DropdownItem key="detail">detail</DropdownItem>
-              <DropdownItem key="doctor">doctor name</DropdownItem>
-              <DropdownItem key="doctor case">doctor case</DropdownItem>
-              <DropdownItem key="status">status</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          <Dropdown size="lg" classNames={{ base: "right-[20px]" }}>
-            <DropdownTrigger>
-              <Button
-                variant="flat"
-                color="default"
-                endContent={
-                  <ChevronDown className="text-default-500" size={20} />
-                }
-              >
-                Status
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions">
-              <DropdownItem
-                className="flex justify-between"
-                key="save"
-                startContent={<Save className="text-default-500" />}
-              >
-                save
-              </DropdownItem>
-              <DropdownItem
-                key="success"
-                startContent={<Check className="text-default-500" />}
-              >
-                success
-              </DropdownItem>
-              <DropdownItem
-                key="cancel"
-                startContent={<Slash className="text-default-500" size={22} />}
-              >
-                cancel
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-
-          <Dropdown  size="sm" classNames={{ base: "right-[20px]",}}>
-            <DropdownTrigger>
-              <Button
-                variant="flat"
-                color="primary"
-                endContent={<PlusCircle className="text-blue-500" size={20} />}
-              >
-                Add Form
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions " variant="faded">
-              <DropdownItem
-                onPress={() => setModalForm1(true)}
-                key="form1"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 1
-              </DropdownItem>
-              <DropdownItem
-                onPress={() => setModalForm2(true)}
-                key="form2"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 2
-              </DropdownItem>
-              <DropdownItem
-                onPress={() => setModalForm3(true)}
-                key="form3"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 3
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </div>
-
-        <Table aria-label="Example static collection table" radius="md">
-          <TableHeader>
-            <TableColumn>ID</TableColumn>
-            <TableColumn>HN</TableColumn>
-            <TableColumn>STATUS</TableColumn>
-            <TableColumn className="text-center">ACTION</TableColumn>
-          </TableHeader>
-          <TableBody>
-            <TableRow key="1">
-              <TableCell>Tony Reichert</TableCell>
-              <TableCell>CEO</TableCell>
-              <TableCell>save</TableCell>
-              <TableCell>
-                {" "}
-                <div className="flex justify-center gap-[10px] items-center">
-                  <Tooltip color="default" content="ดูข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip color="default" content="แก้ไขข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-            <TableRow key="2">
-              <TableCell>Zoey Lang</TableCell>
-              <TableCell>Technical Lead</TableCell>
-              <TableCell>save</TableCell>
-              <TableCell>
-                {" "}
-                <div className="flex justify-center gap-[10px] items-center">
-                  <Tooltip color="default" content="ดูข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip color="default" content="แก้ไขข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-            <TableRow key="3">
-              <TableCell>Jane Fisher</TableCell>
-              <TableCell>Senior Developer</TableCell>
-              <TableCell>save</TableCell>
-              <TableCell>
-                {" "}
-                <div className="flex justify-center gap-[10px] items-center">
-                  <Tooltip color="default" content="ดูข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip color="default" content="แก้ไขข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-            <TableRow key="4">
-              <TableCell>William Howard</TableCell>
-              <TableCell>Community Manager</TableCell>
-              <TableCell>cancel</TableCell>
-              <TableCell>
-                {" "}
-                <div className="flex justify-center gap-[10px] items-center">
-                  <Tooltip color="default" content="ดูข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                  <Tooltip color="default" content="แก้ไขข้อมูล">
-                    <Button size="sm" isIconOnly variant="light">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6 text-[#71717A]"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </Button>
-                  </Tooltip>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-        <Pagination
-          className="mt-2 flex justify-end"
-          isCompact
-          showControls
-          initialPage={1}
-          total={10}
         />
       </div>
     </div>
