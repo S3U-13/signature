@@ -56,13 +56,14 @@ export default function page() {
         </div>
 
         {/* Search Section */}
-        <div className="flex flex-col sm:flex-row justify-end items-center">
-          <div className="flex items-center gap-2 w-full sm:w-1/2">
+        <div className="flex flex-col sm:flex-row justify-end items-center px-2">
+          <div className="flex items-center justify-end gap-2 w-full sm:w-1/2">
             <Input
               size="sm"
               label="ค้นหา"
               placeholder="กรอก HN ...."
               variant="flat"
+              className="w-2/3"
             />
             <Button isIconOnly color="secondary" variant="solid">
               <Search size={16} color="#FFFFFF" />
@@ -71,7 +72,7 @@ export default function page() {
         </div>
 
         {/* Table Section */}
-        <div className="overflow-x-auto mt-4 rounded-lg p-2">
+        <div className="overflow-x-auto mt-2 rounded-lg p-2">
           <Table
             aria-label="ตารางรายการ"
             className="min-w-full text-sm"
@@ -103,7 +104,7 @@ export default function page() {
                       isIconOnly
                       variant="flat"
                       className="hover:bg-gray-200 transition-colors"
-                      onPress={() => setModalForm1(true)}
+                      onPress={() => setModalForm2(true)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

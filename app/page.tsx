@@ -31,24 +31,26 @@ export default function Home() {
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-        <Link
-          isExternal
-          className={buttonStyles({
-            color: "default",
-            radius: "full",
-            variant: "faded",
-          })}
-          href="/form"
-        >
-          Documentation
-        </Link>
+
         <Button
+          size="lg"
+          color="default"
+          variant="bordered"
+          radius="full"
+          className="text-gray-700"
+          onPress={() => setOpenLogin(true)}
+        >
+          สำหรับคนไข้
+        </Button>
+
+        <Button
+          size="lg"
           color="primary"
           variant="solid"
           onPress={() => setOpenLogin(true)}
           radius="full"
         >
-          สำหรับหมอ/พยาบาล
+          สำหรับออกใบยินยอม
         </Button>
       </div>
 

@@ -15,8 +15,9 @@ import useHook from "./useHook";
 import Sign01 from "./signature01/page";
 import Sign02 from "./signature02/page";
 import Sign03 from "./signature03/page";
-import { p, span } from "framer-motion/client";
+
 import { Edit3 } from "@deemlol/next-icons";
+import { Select, SelectItem } from "@heroui/select";
 
 export default function page({ openForm1, closeForm1, modalRef }) {
   const {
@@ -34,6 +35,12 @@ export default function page({ openForm1, closeForm1, modalRef }) {
     handleSaveSignature2,
     handleSaveSignature3,
   } = useHook();
+
+  const prename = [
+    { key: "1", label: "นาย" },
+    { key: "2", label: "นาง" },
+    { key: "3", label: "นางสาว" },
+  ];
   return (
     <div>
       <Modal
@@ -41,53 +48,92 @@ export default function page({ openForm1, closeForm1, modalRef }) {
         isOpen={openForm1}
         onOpenChange={closeForm1}
         classNames={{
-          body: "max-h-[calc(85vh-120px)] overflow-y-scroll p-6 bg-gradient-to-b from-white to-blue-50",
+          body: "max-h-[calc(85vh-120px)] overflow-y-scroll py-6",
+          header: "border-b border-divider py-6",
+          footer: "border-t border-divider"
         }}
         placement="center"
       >
         <ModalContent ref={modalRef}>
           {(closeForm1) => (
             <>
-              <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-blue-700">
-                หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสีโดยใช้รังสีเอกซเรย์และสารทึบรังสี
+              <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-gray-800">
+                <h1>หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสี</h1>
+                <h1>โดยใช้รังสีเอกซเรย์และสารทึบรังสี</h1>
               </ModalHeader>
 
-              <ModalBody className="space-y-6 text-gray-800">
+              <ModalBody className="space-y-4 text-gray-800 ">
                 <div className="text-center">
-                  <h1 className="font-medium text-blue-600">
+                  <h1 className="font-medium ">
                     หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า
                   </h1>
                 </div>
 
                 {/* ---------------- ข้อมูลผู้ป่วย ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                     ข้อมูลผู้ป่วย
                   </h2>
-                  <div className="grid grid-cols-5 gap-3">
+
+                  <div className="grid grid-cols-6 gap-3 ">
                     <Input
-                      size="sm"
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
+                      classNames={{ label: "text-gray-600" }}
                       className="col-span-3"
                       label="ชื่อ-สกุล ผู้ป่วย"
                     />
-                    <Input size="sm" className="col-span-2" label="อายุ" />
-                    <Input size="sm" className="col-span-2" label="HN" />
-                    <DatePicker
-                      size="sm"
-                      isReadOnly
+                    <div className="flex items-center gap-2 col-span-1 ">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="อายุ"
+                        classNames={{ label: "text-gray-600" }}
+                      />
+                      <span className="text-gray-600">ปี</span>
+                    </div>
+
+                    <Input
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
                       className="col-span-2"
-                      label="วันที่"
+                      label="HN"
+                      classNames={{ label: "text-gray-600" }}
                     />
-                    <Input size="sm" className="col-span-1" label="น้ำหนัก" />
+                    <DatePicker
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
+                      className="col-span-2 pl-2"
+                      label="วันที่"
+                      classNames={{ label: "text-gray-600" }}
+                    />
+                    <div className="flex items-center gap-2 col-span-2">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="น้ำหนัก"
+                        className="w-[120px]"
+                        classNames={{ label: "text-gray-600" }}
+                      />
+                      <span className="text-gray-600">กิโลกรัม</span>
+                    </div>
                   </div>
                 </section>
 
                 {/* ---------------- คำอธิบาย ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                     คำอธิบายการตรวจ
                   </h2>
-                  <div className="space-y-3 text-sm leading-6">
+
+                  <div className="space-y-1 text-sm leading-6">
                     <p className="indent-8">
                       ท่านกำลังจะเข้ารับการตรวจทางรังสีโดยใช้รังสีเอกซเรย์
                       หรือการฉีดสารทึบรังสีร่วมกับการเอกซเรย์
@@ -111,120 +157,247 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                 </section>
 
                 {/* ---------------- แบบสอบถาม ---------------- */}
-                <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
-                    แบบสอบถามประวัติ
+                <section className="rounded-2xl border border-gray-100 bg-white/70 backdrop-blur-sm p-6 shadow-sm hover:shadow-md transition-all duration-300">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
+                    แบบสอบถามประวัติทางการแพทย์
                   </h2>
-                  <div className="space-y-4">
-                    <p>1. ท่านมีโรคประจำตัวดังต่อไปนี้หรือไม่</p>
-                    <div className="grid grid-cols-2 gap-3 w-5/6 mx-auto">
-                      {[
-                        "โรคภูมิแพ้",
-                        "โรคหอบหืด",
-                        "โรคไตวาย",
-                        "โรคเบาหวาน",
-                        "โรคหัวใจ",
-                        "โรคลมชัก",
-                      ].map((label) => (
+
+                  <div
+                    className="space-y-6 text-md
+                   text-gray-700"
+                  >
+                    {/* ข้อ 1 */}
+                    <div>
+                      <p className="font-medium mb-2">
+                        1. ท่านมีโรคประจำตัวดังต่อไปนี้หรือไม่
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-inner">
+                        {[
+                          "โรคภูมิแพ้",
+                          "โรคหอบหืด",
+                          "โรคไตวาย",
+                          "โรคเบาหวาน",
+                          "โรคหัวใจ",
+                          "โรคลมชัก",
+                        ].map((label) => (
+                          <div
+                            key={label}
+                            className="flex flex-col gap-1 bg-white"
+                          >
+                            <span className="font-medium text-gray-800">
+                              {label}
+                            </span>
+                            <RadioGroup
+                              orientation="horizontal"
+                              className="text-sm text-gray-600"
+                            >
+                              <Radio value="y">มี</Radio>
+                              <Radio value="n">ไม่มี</Radio>
+                            </RadioGroup>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* ข้อ 2 */}
+                    <div>
+                      <p className="font-medium mb-2">
+                        2. ท่านเคยได้รับการฉีดสารทึบรังสีมาก่อนหรือไม่
+                      </p>
+                      <RadioGroup
+                        orientation="horizontal"
+                        className="ml-4 text-gray-600"
+                      >
+                        <Radio value="y">เคย</Radio>
+                        <Radio value="n">ไม่เคย</Radio>
+                        <Radio value="r">จำไม่ได้</Radio>
+                      </RadioGroup>
+                    </div>
+
+                    {/* ข้อ 3 */}
+                    <div>
+                      <p className="font-medium mb-2">
+                        3. ถ้าเคยตรวจ ท่านแพ้สารทึบรังสีหรือไม่
+                      </p>
+                      <div className="flex flex-wrap items-end gap-3 ml-4">
                         <RadioGroup
-                          key={label}
-                          label={label}
                           orientation="horizontal"
+                          className="text-gray-600"
+                        >
+                          <Radio value="y">เคย</Radio>
+                          <Radio value="n">ไม่เคย</Radio>
+                          <Radio value="r">จำไม่ได้</Radio>
+                        </RadioGroup>
+                        <Input
+                          size="md"
+                          radius="sm"
+                          label="ระบุอาการ"
+                          labelPlacement="outside-left"
+                          placeholder="เช่น ผื่นขึ้น, หายใจลำบาก"
+                          className="max-w-[280px]"
+                        />
+                      </div>
+                    </div>
+
+                    {/* ข้อ 4 */}
+                    <div>
+                      <p className="font-medium mb-2">
+                        4. ท่านมีประวัติแพ้อาหารทะเลหรือไม่
+                      </p>
+                      <div className="flex flex-wrap items-end gap-3 ml-4">
+                        <RadioGroup
+                          orientation="horizontal"
+                          className="text-gray-600"
                         >
                           <Radio value="y">มี</Radio>
                           <Radio value="n">ไม่มี</Radio>
                         </RadioGroup>
-                      ))}
+                        <Input
+                          size="md"
+                          radius="sm"
+                          label="ระบุอาการ"
+                          labelPlacement="outside-left"
+                          placeholder="เช่น คัน, บวม, คลื่นไส้"
+                          className="max-w-[280px]"
+                        />
+                      </div>
                     </div>
 
-                    <RadioGroup
-                      classNames={{ label: "text-black" }}
-                      label="2. ท่านเคยได้รับการฉีดสารทึบรังสีมาก่อนหรือไม่"
-                      orientation="horizontal"
-                    >
-                      <Radio value="y">เคย</Radio>
-                      <Radio value="n">ไม่เคย</Radio>
-                      <Radio value="r">จำไม่ได้</Radio>
-                    </RadioGroup>
+                    {/* ข้อ 5 */}
+                    <div>
+                      <p className="font-medium mb-2">
+                        5. ท่านมีประวัติการแพ้ยาอื่น ๆ หรือไม่
+                      </p>
+                      <div className="flex flex-wrap items-end gap-3 ml-4">
+                        <RadioGroup
+                          orientation="horizontal"
+                          className="text-gray-600"
+                        >
+                          <Radio value="y">มี</Radio>
+                          <Radio value="n">ไม่มี</Radio>
+                          <Radio value="r">จำไม่ได้</Radio>
+                        </RadioGroup>
+                        <Input
+                          size="md"
+                          radius="sm"
+                          label="ระบุอาการ"
+                          labelPlacement="outside-left"
+                          placeholder="เช่น ผื่น, หน้ามืด, หายใจลำบาก"
+                          className="max-w-[280px]"
+                        />
+                      </div>
+                    </div>
 
-                    <RadioGroup
-                      label="3. ถ้าเคยตรวจท่านแพ้สารทึบรังสีหรือไม่"
-                      orientation="horizontal"
-                    >
-                      <Radio value="y">เคย</Radio>
-                      <Radio value="n">ไม่เคย</Radio>
-                      <Radio value="r">จำไม่ได้</Radio>
-                      <Input label="ระบุอาการ" />
-                    </RadioGroup>
-
-                    <RadioGroup
-                      label="4. ท่านมีประวัติแพ้อาหารทะเลหรือไม่"
-                      orientation="horizontal"
-                    >
-                      <Radio value="y">มี</Radio>
-                      <Radio value="n">ไม่มี</Radio>
-                      <Input label="ระบุอาการ" />
-                    </RadioGroup>
-
-                    <RadioGroup
-                      label="5. ท่านมีประวัติการแพ้ยาอื่นๆ หรือไม่"
-                      orientation="horizontal"
-                    >
-                      <Radio value="y">มี</Radio>
-                      <Radio value="n">ไม่มี</Radio>
-                      <Radio value="r">จำไม่ได้</Radio>
-                      <Input label="ระบุอาการ" />
-                    </RadioGroup>
-
-                    <div className="flex flex-col gap-2">
-                      <span>
+                    {/* ข้อ 6 */}
+                    <div>
+                      <p className="font-medium mb-2">
                         6. ข้าพเจ้าขอรับรองว่าไม่ได้อยู่ในระหว่างตั้งครรภ์
-                      </span>
-                      <DatePicker
-                        isReadOnly
-                        className="max-w-[284px]"
-                        label="โดยประจำเดือนสุดท้ายมาวันที่"
-                      />
+                      </p>
+                      <div className="ml-4">
+                        <DatePicker
+                          radius="sm"
+                          className="max-w-[330px]"
+                          labelPlacement="outside-left"
+                          label="โดยประจำเดือนสุดท้ายมาวันที่"
+                        />
+                      </div>
                     </div>
                   </div>
                 </section>
 
                 {/* ---------------- ส่วนลงนาม ---------------- */}
-                <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm space-y-2">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
-                    การยินยอม
+                <section className="rounded-2xl border border-gray-100  p-6 shadow-sm space-y-6">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
+                    การยินยอมเข้ารับการตรวจ
                   </h2>
-                  <Input label="ข้าพเจ้า" />
-                  <Input label="โดยเกี่ยวข้อง" />
-                  <Input label="ชื่อ" />
-                  <p className="text-sm leading-6">
-                    ได้รับทราบคำอธิบายข้างต้น รวมทั้งผลแทรกซ้อนที่อาจเกิดขึ้น...
-                  </p>
-                  <RadioGroup orientation="horizontal">
-                    <Radio value="y">ยินยอมให้ทำการตรวจ</Radio>
-                    <Radio value="n">ไม่ยินยอมให้ทำการตรวจ</Radio>
-                  </RadioGroup>
-                  <span>จึงได้ลงลายมือชื่อไว้เป็นหลักฐาน</span>
 
-                  <div className="grid grid-cols-1 gap-3 mt-2 ">
-                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
-                      <span>ผู้ป่วย/ตัวแทนผู้ป่วย</span>
-                      <div className="flex gap-2 items-center">
-                        <span className="flex gap-2 items-center">
+                  {/* กล่องเนื้อหาหลัก */}
+                  <div className="grid grid-cols-12 gap-y-3 items-center rounded-xl bg-white/60 ">
+                    <p className="text-sm col-span-1 text-gray-600">ข้าพเจ้า</p>
+
+                    <Select
+                      className="col-span-2"
+                      items={prename}
+                      placeholder="นาย / นาง / นางสาว"
+                      size="md"
+                      radius="sm"
+                      variant="flat"
+                    >
+                      {(item) => <SelectItem>{item.label}</SelectItem>}
+                    </Select>
+
+                    <Input
+                      className="col-span-5 ml-2"
+                      size="md"
+                      radius="sm"
+                      placeholder="ชื่อ-นามสกุล"
+                    />
+
+                    <p className="text-sm text-center col-span-2 text-gray-600">
+                      โดยเกี่ยวข้อง
+                    </p>
+
+                    <Input
+                      className="col-span-2"
+                      size="md"
+                      radius="sm"
+                      placeholder="ระบุความเกี่ยวข้อง"
+                    />
+
+                    <p className="text-sm col-span-1 text-gray-600">ชื่อ</p>
+                    <Input
+                      className="col-span-5"
+                      size="md"
+                      radius="sm"
+                      placeholder="ชื่อผู้เกี่ยวข้อง"
+                    />
+
+                    <p className="text-sm leading-6 col-span-12 text-gray-600 mt-2">
+                      ได้รับทราบคำอธิบายข้างต้น
+                      รวมทั้งผลแทรกซ้อนที่อาจเกิดขึ้นจากการตรวจดังกล่าว
+                      โดยข้าพเจ้า
+                    </p>
+
+                    <RadioGroup
+                      className="col-span-12"
+                      orientation="horizontal"
+                      classNames={{ base: "text-sm text-gray-700" }}
+                    >
+                      <Radio value="y">ยินยอมให้ทำการตรวจ</Radio>
+                      <Radio value="n">ไม่ยินยอมให้ทำการตรวจ</Radio>
+                    </RadioGroup>
+                  </div>
+
+                  {/* ลายเซ็น */}
+                  <div className="grid gap-5 mt-4">
+                    <span className="text-gray-700 text-md font-semibold">
+                      จึงได้ลงลายมือชื่อไว้เป็นหลักฐาน
+                    </span>
+
+                    {/* ผู้ป่วย */}
+                    <div className="rounded-xl border border-gray-200 bg-white/70 p-4 space-y-3 shadow-sm">
+                      <span className="font-medium text-gray-700 text-sm">
+                        ผู้ป่วย / ตัวแทนผู้ป่วย
+                      </span>
+                      <div className="flex flex-wrap gap-3 items-center">
+                        <span className="text-sm flex items-center gap-2 text-gray-600">
                           ลงชื่อ{" "}
-                          {!signature && (
-                            <span>.............................</span>
-                          )}
-                          {signature && (
+                          {!signature ? (
+                            <span className="text-gray-400">
+                              .............................
+                            </span>
+                          ) : (
                             <img
                               src={signature}
                               alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                              className="border border-gray-200 rounded-lg shadow w-[180px] h-[50px] object-contain bg-white"
                             />
                           )}
                         </span>
                         <Button
-                          size="sm"
+                          size="md"
                           isIconOnly
                           color="secondary"
                           variant="flat"
@@ -233,39 +406,47 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                           <Edit3 className="size-5" />
                         </Button>
                       </div>
-
                       <Input
-                        className="max-w-1/2"
-                        size="sm"
-                        label="ชื่อ"
-                        type="text"
+                        className="max-w-xs"
+                        size="md"
+                        radius="sm"
+                        placeholder="ชื่อ-นามสกุล"
                       />
                     </div>
-                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
-                      <span>แพทย์</span>
-                      <span>ลงชื่อ.........................</span>
-                      <span className="block">
-                        (.............ชื่อ..............)
+
+                    {/* แพทย์ */}
+                    <div className="rounded-xl border border-gray-200 bg-white/70 p-4 space-y-3 shadow-sm">
+                      <span className="font-medium text-gray-700 text-sm">
+                        แพทย์
                       </span>
+                      <span className="text-sm text-gray-600">
+                        ลงชื่อ....................................
+                      </span>
+                      <span className="text-sm text-gray-500">(ชื่อแพทย์)</span>
                     </div>
-                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
-                      <span>นักรังสีแพทย์</span>
-                      <div className="flex gap-2 items-center">
-                        <span className="flex gap-2 items-center">
+
+                    {/* นักรังสีแพทย์ */}
+                    <div className="rounded-xl border border-gray-200 bg-white/70 p-4 space-y-3 shadow-sm">
+                      <span className="font-medium text-gray-700 text-sm">
+                        นักรังสีแพทย์
+                      </span>
+                      <div className="flex flex-wrap gap-3 items-center">
+                        <span className="text-sm flex items-center gap-2 text-gray-600">
                           ลงชื่อ{" "}
-                          {!signature2 && (
-                            <span>.............................</span>
-                          )}
-                          {signature2 && (
+                          {!signature2 ? (
+                            <span className="text-gray-400">
+                              .............................
+                            </span>
+                          ) : (
                             <img
                               src={signature2}
-                              alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                              alt="signature2"
+                              className="border border-gray-200 rounded-lg shadow w-[180px] h-[50px] object-contain bg-white"
                             />
                           )}
                         </span>
                         <Button
-                          size="sm"
+                          size="md"
                           isIconOnly
                           color="secondary"
                           variant="flat"
@@ -274,32 +455,36 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                           <Edit3 className="size-5" />
                         </Button>
                       </div>
-
                       <Input
-                        className="max-w-1/2"
-                        size="sm"
-                        label="ชื่อ"
-                        type="text"
+                        className="max-w-xs"
+                        size="md"
+                        radius="sm"
+                        placeholder="ชื่อ-นามสกุล"
                       />
                     </div>
-                    <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg border border-divider">
-                      <span>พยาบาล</span>
-                      <div className="flex gap-2 items-center">
-                        <span className="flex gap-2 items-center">
+
+                    {/* พยาบาล */}
+                    <div className="rounded-xl border border-gray-200 bg-white/70 p-4 space-y-3 shadow-sm">
+                      <span className="font-medium text-gray-700 text-sm">
+                        พยาบาล
+                      </span>
+                      <div className="flex flex-wrap gap-3 items-center">
+                        <span className="text-sm flex items-center gap-2 text-gray-600">
                           ลงชื่อ{" "}
-                          {!signature3 && (
-                            <span>.............................</span>
-                          )}
-                          {signature3 && (
+                          {!signature3 ? (
+                            <span className="text-gray-400">
+                              .............................
+                            </span>
+                          ) : (
                             <img
                               src={signature3}
-                              alt="signature"
-                              className="border rounded-xl shadow-md w-[200px] h-[55px]"
+                              alt="signature3"
+                              className="border border-gray-200 rounded-lg shadow w-[180px] h-[50px] object-contain bg-white"
                             />
                           )}
                         </span>
                         <Button
-                          size="sm"
+                          size="md"
                           isIconOnly
                           color="secondary"
                           variant="flat"
@@ -308,52 +493,64 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                           <Edit3 className="size-5" />
                         </Button>
                       </div>
-
                       <Input
-                        className="max-w-1/2"
-                        size="sm"
-                        label="ชื่อ"
-                        type="text"
+                        className="max-w-xs"
+                        size="md"
+                        radius="sm"
+                        placeholder="ชื่อ-นามสกุล"
+                      />
+                    </div>
+
+                    <div className="pt-2 flex justify-end">
+                      <DatePicker
+                        labelPlacement="outside"
+                        className="w-40"
+                        label="วันที่"
                       />
                     </div>
                   </div>
-                  <DatePicker
-                    isReadOnly
-                    className="max-w-[284px]"
-                    label="วันที่"
-                  />
                 </section>
 
                 {/* ---------------- สำหรับเจ้าหน้าที่ ---------------- */}
-                <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm space-y-2">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
+                <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm grid grid-cols-7 gap-2">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4 col-span-7">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                     สำหรับเจ้าหน้าที่
                   </h2>
-                  <Textarea
-                    isClearable
-                    className="max-w-xs"
-                    label="Description"
-                    labelPlacement="outside"
-                    placeholder="บันทึก"
-                    variant="bordered"
-                  />
-                  <div>
-                    <span>ลงชื่อ........................</span>
-                    <span className="block">
-                      (.............ชื่อ..............)
-                    </span>
-                    <span>ตำแหน่ง..............</span>
+                  <div className="grid grid-cols-6 items-center text-sm space-y-3 rounded-xl border border-gray-200 bg-white/60 p-4 shadow-inner col-span-4">
+                    {" "}
+                    <Textarea
+                      isClearable
+                      className="max-w-xs col-span-6"
+                      label="บันทึก (กรณีผู้ป่วยเเพ้สารทึบรังสี)"
+                      labelPlacement="outside"
+                      variant="flat"
+                    />
+                    <div className="">
+                      <span>ลงชื่อ........................</span>
+                      <span className="block">
+                        (.............ชื่อ..............)
+                      </span>
+                      <span>ตำแหน่ง..............</span>
+                    </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 mt-3">
-                    <Input label="Cr" />
-                    <Input label="eGFR" />
+                  <div className="grid grid-cols-6 gap-2 items-center text-sm  space-y-1 rounded-xl border border-gray-200 bg-white p-4 shadow-inner col-span-3">
+                    <div className="flex items-center gap-2 col-span-3">
+                      <p>Cr</p>
+                      <Input size="md" radius="sm" />
+                    </div>
+
+                    <p className="col-span-1 text-center">eGFR</p>
+                    <Input className="col-span-2" size="md" radius="sm" />
+                    <p className="text-xs text-center text-gray-500 col-span-6">
+                      (ต้องมี Cr ≤ 1.5 mg%, eGFR ≥ 45)
+                    </p>
+                    <p className="col-span-3">Contrast media</p>
+                    <Input size="md" className="col-span-3" />
+                    <p className="col-span-2">ปริมาณ (CC)</p>
+                    <Input size="md" className="col-span-4" />
                   </div>
-                  <p className="text-xs text-gray-500">
-                    (ต้องมี Cr ≤ 1.5 mg%, eGFR ≥ 45)
-                  </p>
-                  <Input label="Contrast media" />
-                  <Input label="ปริมาณ (CC)" />
                 </section>
                 <Sign01
                   modalRefSign={modalRefSign}
