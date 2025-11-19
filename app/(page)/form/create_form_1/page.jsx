@@ -50,7 +50,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
         classNames={{
           body: "max-h-[calc(85vh-120px)] overflow-y-scroll py-6",
           header: "border-b border-divider py-6",
-          footer: "border-t border-divider"
+          footer: "border-t border-divider",
         }}
         placement="center"
       >
@@ -60,6 +60,9 @@ export default function page({ openForm1, closeForm1, modalRef }) {
               <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-gray-800">
                 <h1>หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสี</h1>
                 <h1>โดยใช้รังสีเอกซเรย์และสารทึบรังสี</h1>
+                <h1 className="text-xs text-gray-600">
+                  หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า
+                </h1>
               </ModalHeader>
 
               <ModalBody className="space-y-4 text-gray-800 ">

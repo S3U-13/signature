@@ -37,67 +37,107 @@ export default function page({ openForm1, closeForm1, modalRef }) {
         isOpen={openForm1}
         onOpenChange={closeForm1}
         classNames={{
-          body: "max-h-[calc(85vh-120px)] overflow-y-scroll p-6 bg-gradient-to-b from-white to-blue-50",
+          body: "max-h-[calc(85vh-120px)] overflow-y-scroll py-6",
+          header: "border-b border-divider py-6",
+          footer: "border-t border-divider",
         }}
         placement="center"
       >
         <ModalContent ref={modalRef}>
           {(closeForm1) => (
             <>
-              <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-blue-700">
-                หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสีโดยใช้รังสีเอกซเรย์และสารทึบรังสี
+              <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-gray-800">
+                <h1>หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสี</h1>
+                <h1>โดยใช้รังสีเอกซเรย์และสารทึบรังสี</h1>
+                <h1 className="text-xs text-gray-600">หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า</h1>
               </ModalHeader>
 
               <ModalBody className="space-y-6 text-gray-800">
-                <div className="text-center">
-                  <h1 className="font-medium text-blue-600">
-                    หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า
-                  </h1>
-                </div>
-
                 {/* ---------------- ข้อมูลผู้ป่วย ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
                   <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
-                    <h2 className="text-blue-700 font-semibold mb-3 text-sm">
+                    <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
+                      <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                       ข้อมูลผู้ป่วย
                     </h2>
-                    <div className="flex items-center gap-2 w-full sm:w-1/2">
+                    <div className="flex items-center sm:w-1/2 pl-8">
                       <Input
-                        size="sm"
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
                         label="ค้นหา"
                         placeholder="กรอก HN ...."
                         variant="flat"
                       />
-                      <Button isIconOnly color="primary" variant="solid">
-                        <Search size={20} color="#FFFFFF" />
+                      <Button
+                        size="sm"
+                        isIconOnly
+                        color="secondary"
+                        variant="solid"
+                      >
+                        <Search size={18} />
                       </Button>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-5 gap-3">
+                  <div className="grid grid-cols-6 gap-3 border-t border-divider pt-4">
                     <Input
-                      size="sm"
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
+                      classNames={{ label: "text-gray-600" }}
                       className="col-span-3"
                       label="ชื่อ-สกุล ผู้ป่วย"
                     />
-                    <Input size="sm" className="col-span-2" label="อายุ" />
-                    <Input size="sm" className="col-span-2" label="HN" />
-                    <DatePicker
-                      size="sm"
-                      isReadOnly
+                    <div className="flex items-center gap-2 col-span-1 ">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="อายุ"
+                        classNames={{ label: "text-gray-600" }}
+                      />
+                      <span className="text-gray-600">ปี</span>
+                    </div>
+
+                    <Input
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
                       className="col-span-2"
-                      label="วันที่"
+                      label="HN"
+                      classNames={{ label: "text-gray-600" }}
                     />
-                    <Input size="sm" className="col-span-1" label="น้ำหนัก" />
+                    <DatePicker
+                      labelPlacement="outside-left"
+                      size="md"
+                      radius="sm"
+                      className="col-span-2 pl-2"
+                      label="วันที่"
+                      classNames={{ label: "text-gray-600" }}
+                    />
+                    <div className="flex items-center gap-2 col-span-2">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="น้ำหนัก"
+                        className="w-[120px]"
+                        classNames={{ label: "text-gray-600" }}
+                      />
+                      <span className="text-gray-600">กิโลกรัม</span>
+                    </div>
                   </div>
                 </section>
 
                 {/* ---------------- คำอธิบาย ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                  <h2 className="text-blue-700 font-semibold mb-3 text-sm">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                     คำอธิบายการตรวจ
                   </h2>
-                  <div className="space-y-3 text-sm leading-6">
+
+                  <div className="space-y-1 text-sm leading-6">
                     <p className="indent-8">
                       ท่านกำลังจะเข้ารับการตรวจทางรังสีโดยใช้รังสีเอกซเรย์
                       หรือการฉีดสารทึบรังสีร่วมกับการเอกซเรย์
@@ -122,10 +162,19 @@ export default function page({ openForm1, closeForm1, modalRef }) {
 
                 {/* ---------------- ส่วนลงนาม ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm space-y-2">
-                  <div className="grid grid-cols-1 gap-y-3 p-2  rounded-lg ">
-                    <span>แพทย์</span>
-                    <span>ลงชื่อ.........................</span>
-                    <span className="block">
+                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2">
+                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
+                    จึงได้ลงลายมือชื่อไว้เป็นหลักฐาน
+                  </h2>
+
+                  <div className="rounded-xl border border-gray-200 bg-white/70 p-4 space-y-2 shadow-sm">
+                    <span className="block font-medium text-gray-700 text-md ">
+                      แพทย์
+                    </span>
+                    <span className="block text-sm text-gray-600">
+                      ลงชื่อ.........................
+                    </span>
+                    <span className="block text-sm text-gray-500">
                       (.............ชื่อ..............)
                     </span>
                   </div>

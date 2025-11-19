@@ -30,6 +30,7 @@ import ModalForm1 from "./create_form_1/page";
 import ModalForm2 from "./create_form_2/page";
 import ModalForm3 from "./create_form_3/page";
 import useHook from "./useHook";
+import { div } from "framer-motion/client";
 
 export default function page() {
   const {
@@ -40,6 +41,7 @@ export default function page() {
     setModalForm2,
     modalForm3,
     setModalForm3,
+    form,
   } = useHook();
   return (
     <div className="border rounded-xl border-divider px-6 py-6 h-full">
@@ -85,6 +87,44 @@ export default function page() {
               <DropdownItem key="status">status</DropdownItem>
             </DropdownMenu>
           </Dropdown>
+          <Dropdown showArrow size="sm">
+            <DropdownTrigger>
+              <Button
+                variant="flat"
+                color="primary"
+                endContent={<PlusCircle className="text-blue-500" size={20} />}
+              >
+                Add Form
+              </Button>
+            </DropdownTrigger>
+
+            <DropdownMenu aria-label="Static Actions" variant="faded">
+              {form?.map((f) => {
+                return (
+                  <DropdownItem
+                    key={f.code}
+                    startContent={<FileText className="text-default-500" />}
+                    onPress={() => {
+                      const id = f.code.replace(/^F0+/, ""); // "1", "2", "3"
+                      if (id === "1") setModalForm1(true);
+                      if (id === "2") setModalForm2(true);
+                      if (id === "3") setModalForm3(true);
+                    }}
+                  >
+                    {f.form_name}
+                  </DropdownItem>
+                );
+              })}
+            </DropdownMenu>
+          </Dropdown>
+
+          {/* <DropdownItem
+            onPress={() => setModalForm1(true)}
+            key="form1"
+            startContent={<FileText className="text-default-500" />}
+          >
+            หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสี
+          </DropdownItem> */}
           <Dropdown size="lg" classNames={{ base: "right-[20px]" }}>
             <DropdownTrigger>
               <Button
@@ -116,41 +156,6 @@ export default function page() {
                 startContent={<Slash className="text-default-500" size={22} />}
               >
                 cancel
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-
-          <Dropdown  size="sm" classNames={{ base: "right-[20px]",}}>
-            <DropdownTrigger>
-              <Button
-                variant="flat"
-                color="primary"
-                endContent={<PlusCircle className="text-blue-500" size={20} />}
-              >
-                Add Form
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu aria-label="Static Actions " variant="faded">
-              <DropdownItem
-                onPress={() => setModalForm1(true)}
-                key="form1"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 1
-              </DropdownItem>
-              <DropdownItem
-                onPress={() => setModalForm2(true)}
-                key="form2"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 2
-              </DropdownItem>
-              <DropdownItem
-                onPress={() => setModalForm3(true)}
-                key="form3"
-                startContent={<FileText className="text-default-500" />}
-              >
-                Form 3
               </DropdownItem>
             </DropdownMenu>
           </Dropdown>

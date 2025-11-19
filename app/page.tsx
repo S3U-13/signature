@@ -17,27 +17,24 @@ export default function Home() {
     setOpenLogin((prev) => !prev);
   };
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-50 text-center px-4">
+    <section className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
       <div className="inline-block max-w-xl">
-        <span className={title()}>Make&nbsp;</span>
-        <span className={title({ color: "violet" })}>beautiful&nbsp;</span>
+        <span className={title()}>CONSENT&nbsp;</span>
+        <span className={title({ color: "violet" })}>FORM&nbsp;</span>
         <br />
-        <span className={title()}>
-          websites regardless of your design experience.
-        </span>
+        <span className={title()}>ออกใบยินยอม</span>
         <div className={subtitle({ class: "mt-4" })}>
           Beautiful, fast and modern React UI library.
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 mt-2">
-
         <Button
           size="lg"
           color="default"
-          variant="bordered"
+          variant="flat"
           radius="full"
-          className="text-gray-700"
+          className=""
           onPress={() => setOpenLogin(true)}
         >
           สำหรับคนไข้
