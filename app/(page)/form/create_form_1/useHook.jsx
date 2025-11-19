@@ -1,8 +1,11 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useApiRequest } from "../../../../hooks/useApi";
 
 export default function useHook() {
+  const { fetchChoice } = useApiRequest();
   const modalRefSign = useRef(null);
+  const [choice, setChoice] = useState([]);
   const [openSign01, setOpenSign01] = useState(false);
   const [openSign02, setOpenSign02] = useState(false);
   const [openSign03, setOpenSign03] = useState(false);
@@ -35,6 +38,31 @@ export default function useHook() {
     // await fetch('/api/upload-signature', { method: 'POST', body: JSON.stringify({ signature: dataUrl }) })
   };
 
+  useEffect(() => {
+    fetchChoice()
+      .then((data) => setChoice(data || []))
+      .catch(console.error);
+  }, [fetchChoice]);
+
+  const [field, setField] = useState({
+    form_type_code: "",
+    hn: "",
+    consent: "",
+    allergy: "",
+    asthma: "",
+    kidney_disease: "",
+    diabetes: "",
+    heart_disease: "",
+    contrast_before: "",
+    contrast_allergy: "",
+    contrast_allergy_detail: "",
+    seafood_allergy: "",
+    seafood_allergy_detail: "",
+    drug_allergy: "",
+    drug_allergy_detail: "",
+    lmp: null,
+  });
+
   return {
     modalRefSign,
     openSign01,
@@ -49,5 +77,8 @@ export default function useHook() {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    choice,
+    field,
+    setField,
   };
 }

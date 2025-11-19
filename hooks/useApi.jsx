@@ -19,6 +19,7 @@ export const useApiRequest = () => {
   };
 
   const fetchForm = () => apiRequest("/api/user/form", "GET");
+  const fetchChoice = () => apiRequest("/api/user/choice", "GET");
 
-  return { fetchForm };
+  return { fetchForm, fetchChoice };
 };

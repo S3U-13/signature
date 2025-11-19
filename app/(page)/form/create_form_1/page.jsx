@@ -18,6 +18,7 @@ import Sign03 from "./signature03/page";
 
 import { Edit3 } from "@deemlol/next-icons";
 import { Select, SelectItem } from "@heroui/select";
+import { div } from "framer-motion/client";
 
 export default function page({ openForm1, closeForm1, modalRef }) {
   const {
@@ -34,6 +35,9 @@ export default function page({ openForm1, closeForm1, modalRef }) {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    choice,
+    field,
+    setField,
   } = useHook();
 
   const prename = [
@@ -195,8 +199,13 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                               orientation="horizontal"
                               className="text-sm text-gray-600"
                             >
-                              <Radio value="y">มี</Radio>
-                              <Radio value="n">ไม่มี</Radio>
+                              {choice
+                                .filter((ch) => ch.choice_type_id === "1")
+                                .map((c) => (
+                                  <Radio key={c.id} value={c.id}>
+                                    {c.choice_name}
+                                  </Radio>
+                                ))}
                             </RadioGroup>
                           </div>
                         ))}
@@ -212,9 +221,13 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                         orientation="horizontal"
                         className="ml-4 text-gray-600"
                       >
-                        <Radio value="y">เคย</Radio>
-                        <Radio value="n">ไม่เคย</Radio>
-                        <Radio value="r">จำไม่ได้</Radio>
+                        {choice
+                          .filter((ch) => ch.choice_type_id === "2")
+                          .map((c) => (
+                            <Radio key={c.id} value={c.id}>
+                              {c.choice_name}
+                            </Radio>
+                          ))}
                       </RadioGroup>
                     </div>
 
@@ -225,21 +238,43 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       </p>
                       <div className="flex flex-wrap items-end gap-3 ml-4">
                         <RadioGroup
+                          name="contrast_allergy"
                           orientation="horizontal"
                           className="text-gray-600"
+                          value={field.contrast_allergy}
+                          onValueChange={(val) =>
+                            setField((prev) => ({
+                              ...prev,
+                              contrast_allergy: val,
+                            }))
+                          }
                         >
-                          <Radio value="y">เคย</Radio>
-                          <Radio value="n">ไม่เคย</Radio>
-                          <Radio value="r">จำไม่ได้</Radio>
+                          {choice
+                            .filter((ch) => ch.choice_type_id === "2")
+                            .map((c) => (
+                              <div
+                                key={c.id}
+                                className="flex item-center gap-2"
+                              >
+                                {" "}
+                                <Radio value={String(c.id)}>
+                                  {c.choice_name}
+                                </Radio>
+                                {String(c.id) === "5" &&
+                                  field.contrast_allergy === "5" && (
+                                    <Input
+                                      name="contrast_allergy_detail"
+                                      size="md"
+                                      radius="sm"
+                                      label="ระบุอาการ"
+                                      labelPlacement="outside-left"
+                                      placeholder="เช่น ผื่นขึ้น, หายใจลำบาก"
+                                      className="max-w-[280px]"
+                                    />
+                                  )}
+                              </div>
+                            ))}
                         </RadioGroup>
-                        <Input
-                          size="md"
-                          radius="sm"
-                          label="ระบุอาการ"
-                          labelPlacement="outside-left"
-                          placeholder="เช่น ผื่นขึ้น, หายใจลำบาก"
-                          className="max-w-[280px]"
-                        />
                       </div>
                     </div>
 
@@ -252,18 +287,42 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                         <RadioGroup
                           orientation="horizontal"
                           className="text-gray-600"
+                          value={field.seafood_allergy}
+                          onValueChange={(val) =>
+                            setField((prev) => ({
+                              ...prev,
+                              seafood_allergy: val,
+                            }))
+                          }
                         >
-                          <Radio value="y">มี</Radio>
-                          <Radio value="n">ไม่มี</Radio>
+                          {choice
+                            .filter((ch) => ch.choice_type_id === "3")
+                            .map((c, index) =>
+                              index <= 1 ? (
+                                <div
+                                  key={c.id}
+                                  className="flex item-center gap-2"
+                                >
+                                  {" "}
+                                  <Radio value={String(c.id)}>
+                                    {c.choice_name}
+                                  </Radio>
+                                  {String(c.id) === "6" &&
+                                    field.seafood_allergy === "6" && (
+                                      <Input
+                                        name="seafood_allergy_detail"
+                                        size="md"
+                                        radius="sm"
+                                        label="ระบุอาการ"
+                                        labelPlacement="outside-left"
+                                        placeholder="เช่น คัน, บวม, คลื่นไส้"
+                                        className="max-w-[280px]"
+                                      />
+                                    )}
+                                </div>
+                              ) : null
+                            )}
                         </RadioGroup>
-                        <Input
-                          size="md"
-                          radius="sm"
-                          label="ระบุอาการ"
-                          labelPlacement="outside-left"
-                          placeholder="เช่น คัน, บวม, คลื่นไส้"
-                          className="max-w-[280px]"
-                        />
                       </div>
                     </div>
 
@@ -276,19 +335,39 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                         <RadioGroup
                           orientation="horizontal"
                           className="text-gray-600"
+                          value={field.drug_allergy}
+                          onValueChange={(val) => {
+                            setField((prev) => ({
+                              ...prev,
+                              drug_allergy: val,
+                            }));
+                          }}
                         >
-                          <Radio value="y">มี</Radio>
-                          <Radio value="n">ไม่มี</Radio>
-                          <Radio value="r">จำไม่ได้</Radio>
+                          {choice
+                            .filter((ch) => ch.choice_type_id === "3")
+                            .map((c) => (
+                              <div
+                                key={c.id}
+                                className="flex item-center gap-2"
+                              >
+                                {" "}
+                                <Radio value={String(c.id)}>
+                                  {c.choice_name}
+                                </Radio>
+                                {String(c.id) === "6" &&
+                                  field.drug_allergy === "6" && (
+                                    <Input
+                                      size="md"
+                                      radius="sm"
+                                      label="ระบุอาการ"
+                                      labelPlacement="outside-left"
+                                      placeholder="เช่น ผื่น, หน้ามืด, หายใจลำบาก"
+                                      className="max-w-[280px]"
+                                    />
+                                  )}
+                              </div>
+                            ))}
                         </RadioGroup>
-                        <Input
-                          size="md"
-                          radius="sm"
-                          label="ระบุอาการ"
-                          labelPlacement="outside-left"
-                          placeholder="เช่น ผื่น, หน้ามืด, หายใจลำบาก"
-                          className="max-w-[280px]"
-                        />
                       </div>
                     </div>
 
@@ -367,9 +446,23 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       className="col-span-12"
                       orientation="horizontal"
                       classNames={{ base: "text-sm text-gray-700" }}
+                      value={field.consent}
+                      onValueChange={(val) => {
+                        setField((prev) => ({
+                          ...prev,
+                          consent: val,
+                        }));
+                      }}
                     >
-                      <Radio value="y">ยินยอมให้ทำการตรวจ</Radio>
-                      <Radio value="n">ไม่ยินยอมให้ทำการตรวจ</Radio>
+                      {choice
+                        .filter((ch) => ch.choice_type_id === "4")
+                        .map((c, index) =>
+                          index <= 1 ? (
+                            <div key={c.id}>
+                              <Radio value={c.id}>{c.choice_name}</Radio>
+                            </div>
+                          ) : null
+                        )}
                     </RadioGroup>
                   </div>
 
