@@ -1,7 +1,9 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useApiRequest } from "../../../../hooks/useApi";
 
 export default function useHook() {
+  const { fetchChoice } = useApiRequest();
   const modalRefSign = useRef(null);
   const [openSign01, setOpenSign01] = useState(false);
   const [openSign02, setOpenSign02] = useState(false);
@@ -9,6 +11,14 @@ export default function useHook() {
   const [signature, setSignature] = useState(null);
   const [signature2, setSignature2] = useState(null);
   const [signature3, setSignature3] = useState(null);
+
+  const [choice, setChoice] = useState([]);
+
+  useEffect(() => {
+    fetchChoice()
+      .then((data) => setChoice(data || []))
+      .catch(console.error);
+  }, [fetchChoice]);
 
   const openModal = () => {
     setOpenSign01((prev) => !prev);
@@ -49,5 +59,6 @@ export default function useHook() {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    choice,
   };
 }

@@ -14,21 +14,15 @@ import React from "react";
 import useHook from "./useHook";
 import { Search } from "@deemlol/next-icons";
 
-export default function page({ openForm1, closeForm1, modalRef }) {
+export default function page({ openForm1, closeForm1, modalRef, selectForm }) {
   const {
-    modalRefSign,
-    openSign01,
-    openSign02,
-    openSign03,
-    setOpenSign01,
-    setOpenSign02,
-    setOpenSign03,
-    signature,
-    signature2,
-    signature3,
-    handleSaveSignature,
-    handleSaveSignature2,
-    handleSaveSignature3,
+    hnInput,
+    setHnInput,
+    handleSearchHn,
+    form,
+    field,
+    setField,
+    handleChange,
   } = useHook();
   return (
     <div>
@@ -49,46 +43,73 @@ export default function page({ openForm1, closeForm1, modalRef }) {
               <ModalHeader className="flex flex-col items-center gap-1 text-center text-lg font-semibold text-gray-800">
                 <h1>หนังสืออธิบายและยินยอมให้ทำการจำลองการฉายรังสี</h1>
                 <h1>โดยใช้รังสีเอกซเรย์และสารทึบรังสี</h1>
-                <h1 className="text-xs text-gray-600">หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า</h1>
+                <h1 className="text-xs text-gray-600">
+                  หน่วยงานรังสีรักษา โรงพยาบาลพระปกเกล้า
+                </h1>
               </ModalHeader>
 
               <ModalBody className="space-y-6 text-gray-800">
                 {/* ---------------- ข้อมูลผู้ป่วย ---------------- */}
                 <section className="border border-gray-200 rounded-2xl p-4 bg-white shadow-sm">
-                  <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+                  <div className="">
                     <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
                       <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
                       ข้อมูลผู้ป่วย
                     </h2>
-                    <div className="flex items-center sm:w-1/2 pl-8">
-                      <Input
-                        labelPlacement="outside-left"
-                        size="md"
-                        radius="sm"
-                        label="ค้นหา"
-                        placeholder="กรอก HN ...."
-                        variant="flat"
-                      />
-                      <Button
-                        size="sm"
-                        isIconOnly
-                        color="secondary"
-                        variant="solid"
-                      >
-                        <Search size={18} />
-                      </Button>
+                    <div className="flex flex-col sm:flex-row justify-between items-center mb-4">
+                      <div className="w-1/4">
+                        <Input
+                          labelPlacement="outside-left"
+                          size="md"
+                          radius="sm"
+                          label="FORM ID :"
+                          value={selectForm}
+                          type="text"
+                          readOnly
+                          disabled
+                        />
+                      </div>
+
+                      <div className="flex items-center sm:w-1/2 pl-8">
+                        <Input
+                          labelPlacement="outside-left"
+                          size="md"
+                          radius="sm"
+                          label="ค้นหา"
+                          value={hnInput}
+                          onChange={(e) => setHnInput(e.target.value)}
+                          placeholder="กรอก HN ...."
+                          variant="flat"
+                        />
+                        <Button
+                          size="sm"
+                          isIconOnly
+                          onPress={handleSearchHn}
+                          color="secondary"
+                          variant="solid"
+                        >
+                          <Search size={18} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-6 gap-3 border-t border-divider pt-4">
-                    <Input
-                      labelPlacement="outside-left"
-                      size="md"
-                      radius="sm"
-                      classNames={{ label: "text-gray-600" }}
-                      className="col-span-3"
-                      label="ชื่อ-สกุล ผู้ป่วย"
-                    />
+                    <form.Field name="pat_name">
+                      {(field) => (
+                        <Input
+                          labelPlacement="outside-left"
+                          size="md"
+                          radius="sm"
+                          value={field.state.value || ""}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          classNames={{ label: "text-gray-600" }}
+                          className="col-span-3"
+                          label="ชื่อ-สกุล ผู้ป่วย"
+                        />
+                      )}
+                    </form.Field>
+
                     <div className="flex items-center gap-2 col-span-1 ">
                       <Input
                         labelPlacement="outside-left"
@@ -99,15 +120,21 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       />
                       <span className="text-gray-600">ปี</span>
                     </div>
+                    <form.Field name="hn">
+                      {(field) => (
+                        <Input
+                          labelPlacement="outside-left"
+                          size="md"
+                          radius="sm"
+                          className="col-span-2"
+                          label="HN"
+                          value={field.state.value || ""}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                          classNames={{ label: "text-gray-600" }}
+                        />
+                      )}
+                    </form.Field>
 
-                    <Input
-                      labelPlacement="outside-left"
-                      size="md"
-                      radius="sm"
-                      className="col-span-2"
-                      label="HN"
-                      classNames={{ label: "text-gray-600" }}
-                    />
                     <DatePicker
                       labelPlacement="outside-left"
                       size="md"

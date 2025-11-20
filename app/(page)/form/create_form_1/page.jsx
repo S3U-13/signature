@@ -218,7 +218,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                         2. ท่านเคยได้รับการฉีดสารทึบรังสีมาก่อนหรือไม่
                       </p>
                       <RadioGroup
-                        orientation="horizontal"
+                        // orientation="horizontal"
                         className="ml-4 text-gray-600"
                       >
                         {choice
@@ -239,7 +239,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       <div className="flex flex-wrap items-end gap-3 ml-4">
                         <RadioGroup
                           name="contrast_allergy"
-                          orientation="horizontal"
+                          // orientation="horizontal"
                           className="text-gray-600"
                           value={field.contrast_allergy}
                           onValueChange={(val) =>
@@ -260,8 +260,8 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                                 <Radio value={String(c.id)}>
                                   {c.choice_name}
                                 </Radio>
-                                {String(c.id) === "5" &&
-                                  field.contrast_allergy === "5" && (
+                                {String(c.id) === "3" &&
+                                  field.contrast_allergy === "3" && (
                                     <Input
                                       name="contrast_allergy_detail"
                                       size="md"
@@ -285,7 +285,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       </p>
                       <div className="flex flex-wrap items-end gap-3 ml-4">
                         <RadioGroup
-                          orientation="horizontal"
+                          // orientation="horizontal"
                           className="text-gray-600"
                           value={field.seafood_allergy}
                           onValueChange={(val) =>
@@ -333,7 +333,7 @@ export default function page({ openForm1, closeForm1, modalRef }) {
                       </p>
                       <div className="flex flex-wrap items-end gap-3 ml-4">
                         <RadioGroup
-                          orientation="horizontal"
+                          // orientation="horizontal"
                           className="text-gray-600"
                           value={field.drug_allergy}
                           onValueChange={(val) => {

@@ -14,22 +14,8 @@ import React from "react";
 import useHook from "./useHook";
 import { Search } from "@deemlol/next-icons";
 
-export default function page({ openForm2, closeForm2, modalRef }) {
-  const {
-    modalRefSign,
-    openSign01,
-    openSign02,
-    openSign03,
-    setOpenSign01,
-    setOpenSign02,
-    setOpenSign03,
-    signature,
-    signature2,
-    signature3,
-    handleSaveSignature,
-    handleSaveSignature2,
-    handleSaveSignature3,
-  } = useHook();
+export default function page({ openForm2, closeForm2, modalRef, selectForm }) {
+  const { hnInput, setHnInput, handleSearchHn } = useHook();
   return (
     <div>
       <Modal
@@ -56,10 +42,26 @@ export default function page({ openForm2, closeForm2, modalRef }) {
               <ModalBody className="space-y-6">
                 {/* SECTION 1: ข้อมูลทั่วไป */}
                 <section className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm p-5 space-y-4">
-                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
-                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
-                    ข้อมูลทั่วไปของผู้ป่วย
-                  </h2>
+                  <div className="flex justify-between items-center">
+                    {" "}
+                    <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 pt-4 mb-4">
+                      <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
+                      ข้อมูลทั่วไปของผู้ป่วย
+                    </h2>
+                    <div className="w-1/4">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="FORM ID :"
+                        value={selectForm}
+                        type="text"
+                        readOnly
+                        disabled
+                      />
+                    </div>
+                  </div>
+
                   <div className="flex justify-between items-center  ">
                     <DatePicker
                       classNames={{ label: "text-gray-600" }}
@@ -75,12 +77,16 @@ export default function page({ openForm2, closeForm2, modalRef }) {
                         size="md"
                         radius="sm"
                         label="ค้นหา"
+                        value={hnInput}
+                        onChange={(e) => setHnInput(e.target.value)}
                         placeholder="กรอก HN ...."
                         variant="flat"
+                        classNames={{ label: "text-gray-600" }}
                       />
                       <Button
                         size="sm"
                         isIconOnly
+                        onPress={handleSearchHn}
                         color="secondary"
                         variant="solid"
                       >

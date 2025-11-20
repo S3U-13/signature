@@ -1,8 +1,14 @@
 "use client";
+import * as z from "zod";
+import { useForm } from "@tanstack/react-form";
 import React, { useRef, useState } from "react";
+import { useApiRequest } from "../../../../hooks/useApi";
 
 export default function useHook() {
+  const { SearchHn } = useApiRequest();
   const modalRefSign = useRef(null);
+  const [hnInput, setHnInput] = useState("");
+  const [pat, setPet] = useState(null);
   const [openSign01, setOpenSign01] = useState(false);
   const [openSign02, setOpenSign02] = useState(false);
   const [openSign03, setOpenSign03] = useState(false);
@@ -34,6 +40,55 @@ export default function useHook() {
     // 👉 สามารถ fetch ไป backend ได้ เช่น:
     // await fetch('/api/upload-signature', { method: 'POST', body: JSON.stringify({ signature: dataUrl }) })
   };
+  const handleSearchHn = async () => {
+    await SearchHn(hnInput, form, setPet);
+  };
+
+  const initialField = () => ({
+    form_type_code: "",
+    pat_name: "",
+    hn: "",
+    relation: "",
+    diseuse: "",
+  });
+
+  const [field, setField] = useState(initialField());
+
+  const defaultValues = initialField();
+
+  const validationSchema = z.object({
+    form_type_code: z.string().optional(),
+    hn: z.coerce.number().nullable(),
+    relation: z.string().optional(),
+    diseuse: z.string().optional(),
+  });
+
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+    setField((prev) => ({
+      ...prev,
+      [name]: e.target.value,
+    }));
+  };
+
+  const form = useForm({
+    defaultValues,
+    onSubmit: async ({ value }) => {
+      try {
+        const validatedData = validationSchema.parse(value);
+        return validatedData;
+      } catch (error) {
+        console.error("Validation or Submit error:", error);
+
+        if (error.errors) {
+          console.table(error.errors);
+        }
+      }
+    },
+    validators: {
+      onSubmit: validationSchema,
+    },
+  });
 
   return {
     modalRefSign,
@@ -49,5 +104,12 @@ export default function useHook() {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    hnInput,
+    setHnInput,
+    handleSearchHn,
+    field,
+    setField,
+    form,
+    handleChange,
   };
 }

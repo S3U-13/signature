@@ -1,7 +1,9 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { useApiRequest } from "../../../../hooks/useApi";
 
 export default function useHook() {
+  const { SearchHn } = useApiRequest();
   const modalRefSign = useRef(null);
   const [openSign01, setOpenSign01] = useState(false);
   const [openSign02, setOpenSign02] = useState(false);
@@ -9,6 +11,8 @@ export default function useHook() {
   const [signature, setSignature] = useState(null);
   const [signature2, setSignature2] = useState(null);
   const [signature3, setSignature3] = useState(null);
+  const [hnInput, setHnInput] = useState("");
+  const [pat, setPet] = useState(null);
 
   const openModal = () => {
     setOpenSign01((prev) => !prev);
@@ -35,6 +39,12 @@ export default function useHook() {
     // await fetch('/api/upload-signature', { method: 'POST', body: JSON.stringify({ signature: dataUrl }) })
   };
 
+  const handleSearchHn = async () => {
+    await SearchHn(hnInput, setPet);
+  };
+
+  console.log(pat);
+
   return {
     modalRefSign,
     openSign01,
@@ -49,5 +59,8 @@ export default function useHook() {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    hnInput,
+    setHnInput,
+    handleSearchHn,
   };
 }

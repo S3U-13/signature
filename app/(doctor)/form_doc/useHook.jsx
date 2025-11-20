@@ -4,12 +4,15 @@ import { useApiRequest } from "../../../hooks/useApi";
 
 export default function useHook() {
   const { fetchForm } = useApiRequest();
+  const didFetch = useRef(false); // 🔑 flag ป้องกันเบิ้ล
   const modalRef = useRef(null);
   const [modalForm1, setModalForm1] = useState(false);
   const [modalForm2, setModalForm2] = useState(false);
   const [modalForm3, setModalForm3] = useState(false);
 
   const [form, setForm] = useState([]);
+
+  const [selectForm, setSelectForm] = useState("");
   const openForm1 = () => {
     setModalForm1((prev) => !prev);
   };
@@ -20,10 +23,13 @@ export default function useHook() {
     setModalForm3((prev) => !prev);
   };
   useEffect(() => {
+      if (didFetch.current) return; // check flag ก่อน
+    didFetch.current = true;
     fetchForm()
       .then((data) => setForm(data || []))
       .catch(console.error);
   }, [fetchForm]);
+
   return {
     modalRef,
     modalForm1,
@@ -33,5 +39,7 @@ export default function useHook() {
     modalForm3,
     setModalForm3,
     form,
+    selectForm,
+    setSelectForm,
   };
 }

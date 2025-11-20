@@ -14,22 +14,8 @@ import React from "react";
 import useHook from "./useHook";
 import { Search } from "@deemlol/next-icons";
 
-export default function page({ openForm3, closeForm3, modalRef }) {
-  const {
-    modalRefSign,
-    openSign01,
-    openSign02,
-    openSign03,
-    setOpenSign01,
-    setOpenSign02,
-    setOpenSign03,
-    signature,
-    signature2,
-    signature3,
-    handleSaveSignature,
-    handleSaveSignature2,
-    handleSaveSignature3,
-  } = useHook();
+export default function page({ openForm3, closeForm3, modalRef, selectForm }) {
+  const { hnInput, setHnInput, handleSearchHn } = useHook();
   return (
     <div>
       <Modal
@@ -55,10 +41,25 @@ export default function page({ openForm3, closeForm3, modalRef }) {
                 {/* 🩺 ส่วนข้อมูลผู้ยินยอม */}
 
                 <section className="p-4 bg-white dark:bg-[#27272a] rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-4">
-                  <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4">
-                    <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
-                    ข้อมูลผู้ยินยอม
-                  </h2>
+                  <div className="flex justify-between items-center">
+                    <h2 className="text-gray-700 font-semibold text-base flex items-center gap-2 mb-4 pt-4">
+                      <span className="w-1 h-5 bg-violet-500 rounded-full"></span>
+                      ข้อมูลผู้ยินยอม
+                    </h2>
+                    <div className="w-1/4">
+                      <Input
+                        labelPlacement="outside-left"
+                        size="md"
+                        radius="sm"
+                        label="FORM ID :"
+                        value={selectForm}
+                        type="text"
+                        readOnly
+                        disabled
+                      />
+                    </div>
+                  </div>
+
                   <div className="flex justify-between items-center  ">
                     <DatePicker
                       classNames={{ label: "text-gray-600" }}
@@ -74,12 +75,15 @@ export default function page({ openForm3, closeForm3, modalRef }) {
                         size="md"
                         radius="sm"
                         label="ค้นหา"
+                        value={hnInput}
+                        onChange={(e) => setHnInput(e.target.value)}
                         placeholder="กรอก HN ...."
                         variant="flat"
                       />
                       <Button
                         size="sm"
                         isIconOnly
+                        onPress={handleSearchHn}
                         color="secondary"
                         variant="solid"
                       >
@@ -109,7 +113,6 @@ export default function page({ openForm3, closeForm3, modalRef }) {
                         เกี่ยวข้องกับผู้ป่วย
                       </p>
                     </div>
-
                     <Input
                       classNames={{ label: "text-gray-600" }}
                       className="col-span-2"

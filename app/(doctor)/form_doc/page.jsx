@@ -42,6 +42,8 @@ export default function page() {
     modalForm3,
     setModalForm3,
     form,
+    selectForm,
+    setSelectForm,
   } = useHook();
   return (
     <div className="border rounded-xl border-divider px-6 py-6 h-full">
@@ -49,16 +51,19 @@ export default function page() {
       <div className="">
         <ModalForm1
           openForm1={modalForm1}
+          selectForm={selectForm}
           modalRef={modalRef}
           closeForm1={() => setModalForm1(false)}
         />
         <ModalForm2
           openForm2={modalForm2}
+          selectForm={selectForm}
           modalRef={modalRef}
           closeForm2={() => setModalForm2(false)}
         />
         <ModalForm3
           openForm3={modalForm3}
+          selectForm={selectForm}
           modalRef={modalRef}
           closeForm3={() => setModalForm3(false)}
         />
@@ -105,10 +110,20 @@ export default function page() {
                     key={f.code}
                     startContent={<FileText className="text-default-500" />}
                     onPress={() => {
+                      const code = f.code;
                       const id = f.code.replace(/^F0+/, ""); // "1", "2", "3"
-                      if (id === "1") setModalForm1(true);
-                      if (id === "2") setModalForm2(true);
-                      if (id === "3") setModalForm3(true);
+                      if (id === "1") {
+                        setModalForm1(true);
+                        setSelectForm(code);
+                      }
+                      if (id === "2") {
+                        setModalForm2(true);
+                        setSelectForm(code);
+                      }
+                      if (id === "3") {
+                        setModalForm3(true);
+                        setSelectForm(code);
+                      }
                     }}
                   >
                     {f.form_name}

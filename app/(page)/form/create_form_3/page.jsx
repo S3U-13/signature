@@ -33,6 +33,7 @@ export default function page({ openForm3, closeForm3, modalRef }) {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    choice,
   } = useHook();
   return (
     <div>
@@ -249,11 +250,13 @@ export default function page({ openForm3, closeForm3, modalRef }) {
                       </div>
 
                       <CheckboxGroup orientation="horizontal">
-                        <Checkbox size="sm" value="y">
-                          <p className="text-sm">
-                            ไม่มีพยานฝ่ายผู้ป่วย (ผู้ป่วยมาคนเดียว)
-                          </p>
-                        </Checkbox>
+                        {choice
+                          .filter((ch) => ch.choice_type_id === "5")
+                          .map((c) => (
+                            <Checkbox size="sm" key={c.id} value={c.id}>
+                              <p className="text-sm">{c.choice_name}</p>
+                            </Checkbox>
+                          ))}
                       </CheckboxGroup>
 
                       <Input

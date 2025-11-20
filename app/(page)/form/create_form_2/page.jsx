@@ -17,6 +17,7 @@ import Sign02 from "./signature02/page";
 import Sign03 from "./signature03/page";
 import { Edit3 } from "@deemlol/next-icons";
 import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
+import { div } from "framer-motion/client";
 
 export default function page({ openForm2, closeForm2, modalRef }) {
   const {
@@ -33,6 +34,7 @@ export default function page({ openForm2, closeForm2, modalRef }) {
     handleSaveSignature,
     handleSaveSignature2,
     handleSaveSignature3,
+    choice,
   } = useHook();
   return (
     <div>
@@ -155,18 +157,20 @@ export default function page({ openForm2, closeForm2, modalRef }) {
                     การยินยอมเข้ารับการรักษา
                   </h2>
 
-                  <RadioGroup orientation="vertical">
-                    <Radio size="sm" className="pl-8" value="y">
-                      <p className="text-sm pt-4 pl-2">
-                        ตัดสินใจเข้ารับการรักษาดังกล่าว เเละ จะไม่ฟ้องร้อง
-                        เรียกร้องหรือเอาความผิดกับโรงพยาบาล
-                        รวมทั้งเเพทย์เเละเจ้าหน้าที่ผู้เกี่ยวข้อง
-                        ในผลอันไม่พึงประสงค์ที่อาจเกิดขึ้นจากการรักษาดังกล่าว
-                      </p>
-                    </Radio>
-                    <Radio size="sm" className="pl-8" value="n">
-                      <p className="text-sm pl-2"> ปฏิเสธการรักษา</p>
-                    </Radio>
+                  <RadioGroup 
+                   orientation="vertical"
+                   className="mt-3">
+                    {choice
+                      .filter((ch) => ch.choice_type_id === "4")
+                      .map((c, index) =>
+                        index >= 2 ? (
+                          <div key={c.id}>
+                            <Radio size="sm" className="pl-8" value={c.id}>
+                              <p className="text-sm pl-2">{c.choice_name}</p>
+                            </Radio>
+                          </div>
+                        ) : null
+                      )}
                   </RadioGroup>
                 </section>
 
@@ -263,11 +267,13 @@ export default function page({ openForm2, closeForm2, modalRef }) {
                       </div>
 
                       <CheckboxGroup orientation="horizontal">
-                        <Checkbox size="sm" value="y">
-                          <p className="text-sm">
-                            ไม่มีพยานฝ่ายผู้ป่วย (ผู้ป่วยมาคนเดียว)
-                          </p>
-                        </Checkbox>
+                        {choice
+                          .filter((ch) => ch.choice_type_id === "5")
+                          .map((c) => (
+                            <Checkbox size="sm" key={c.id} value={c.id}>
+                              <p className="text-sm">{c.choice_name}</p>
+                            </Checkbox>
+                          ))}
                       </CheckboxGroup>
 
                       <Input
