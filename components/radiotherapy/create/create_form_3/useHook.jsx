@@ -193,11 +193,11 @@ export default function useHook({ closeForm3, selectForm }) {
     // await fetch('/api/upload-signature', { method: 'POST', body: JSON.stringify({ signature: dataUrl }) })
   };
 
-  // useEffect(() => {
-  //   if (selectForm) {
-  //     form.setFieldValue("form_type_id", selectForm);
-  //   }
-  // }, [selectForm]);
+  useEffect(() => {
+    if (selectForm) {
+      form.setFieldValue("form_type_id", selectForm);
+    }
+  }, [selectForm]);
 
   return {
     modalRefSign,

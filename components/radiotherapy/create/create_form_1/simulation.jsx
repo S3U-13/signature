@@ -10,12 +10,15 @@ import {
   ModalHeader,
 } from "@heroui/modal";
 import { Radio, RadioGroup } from "@heroui/radio";
-import React from "react";
-import useHook from "./useHook";
+import React, { useEffect, useState } from "react";
+import useHook from "./hook/useHook";
+import useConfirmSignature from "./hook/confirmSignatureHook";
 import { Edit3, Search } from "@deemlol/next-icons";
 import { Select, SelectItem } from "@heroui/select";
 import Sign01 from "./signature01/page";
 import { parseDate } from "@internationalized/date";
+import ModalApprove from "../../apporve_modal/modalApprove";
+import { Info } from "lucide-react";
 
 export default function SimulationCreateModal({
   openForm1,
@@ -46,14 +49,64 @@ export default function SimulationCreateModal({
     handleSaveSignature,
     signature,
     user,
+    selectDoctor,
     pat,
     staff,
     doctor,
     doDate,
+    setIsSign,
   } = useHook({ closeForm1, selectForm });
+
+  const {
+    handleConfirmSignature,
+    setField,
+    signatureData,
+    setSignatureData,
+    loading: confirmLoading,
+  } = useConfirmSignature();
+
+  const [doctorSign, setDoctorSign] = useState(null);
+
+  useEffect(() => {
+    if (signatureData && signatureData.type) {
+      if (signatureData.type === "doctor") {
+        setDoctorSign(signatureData.signature || null);
+        setIsSign(true);
+      }
+    }
+  }, [signatureData]);
+
+  useEffect(() => {
+    if (!openForm1 && setSignatureData) {
+      setSignatureData(null);
+    }
+  }, [openForm1, setSignatureData]);
+
+  const [confirmSignModal, setConfirmSignModal] = useState({
+    isOpen: false,
+    role: null,
+  });
+
+  const handleApproveSignature = async (confirmValue) => {
+    const success = await handleConfirmSignature(confirmValue);
+    if (success) {
+      setConfirmSignModal({ isOpen: false, role: null });
+      // if (typeof fetchData === "function") {
+      //   fetchData();
+      // }
+    }
+  };
+
+  const isApprove = selectDoctor === user?.doctorid ? true : false;
 
   return (
     <div>
+      <ModalApprove
+        isOpen={confirmSignModal.isOpen}
+        onClose={() => setConfirmSignModal({ isOpen: false, role: null })}
+        handleApproveSignature={handleApproveSignature}
+        loading={confirmLoading}
+      />
       <Modal
         size="5xl"
         isOpen={openForm1}
@@ -339,8 +392,24 @@ export default function SimulationCreateModal({
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
                           แพทย์
                         </span>
+                        {isApprove && (
+                          <div className="flex items-center justify-end gap-3">
+                            <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-700 flex items-center justify-center text-neutral-700 dark:text-neutral-300 shadow-sm border border-neutral-200 dark:border-neutral-600">
+                              <Info size={16} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+                                คุณต้องการใช้ลายเซ็นของคุณเลยหรือไม่
+                              </p>
+                              <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                                (ถ้าคุณต้องการใช้ลายเซ็นของคุณ ให้กดปุ่มตรวจสอบ)
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="w-full">
+
+                      <div className="w-full flex justify-between items-center">
                         <form.Field name="doctor_id">
                           {(field) => (
                             <Select
@@ -369,6 +438,43 @@ export default function SimulationCreateModal({
                             </Select>
                           )}
                         </form.Field>
+                        {isApprove && (
+                          <div className="w-full flex justify-end items-center gap-4">
+                            <div className="flex-shrink-0 flex items-center gap-3">
+                              <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
+                                ลงลายมือชื่อ
+                              </span>
+                              {!doctorSign ? (
+                                <div className="w-[180px] h-[50px] rounded-lg border-2 border-dashed border-gray-300 dark:border-neutral-700 flex items-center justify-center text-gray-400 dark:text-neutral-500 text-xs bg-gray-50 dark:bg-neutral-800/30">
+                                  รอการลงนาม
+                                </div>
+                              ) : (
+                                <img
+                                  src={doctorSign}
+                                  alt="doctor_signature"
+                                  className="border border-gray-200 dark:border-neutral-700 rounded-lg shadow-sm w-[180px] h-[50px] object-contain bg-white dark:bg-transparent"
+                                />
+                              )}
+                            </div>
+                            <Button
+                              size="sm"
+                              className="bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white font-medium"
+                              onPress={() => {
+                                setField({
+                                  userid: user?.userid,
+                                  doctorid: user?.doctorid,
+                                  role: "doctor",
+                                });
+                                setConfirmSignModal({
+                                  isOpen: true,
+                                  role: "doctor",
+                                });
+                              }}
+                            >
+                              ตรวจสอบ
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
 

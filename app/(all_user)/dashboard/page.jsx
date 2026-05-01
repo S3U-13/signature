@@ -15,48 +15,62 @@ import {
   MoreVertical,
   Activity,
   UserCheck,
+  Save,
+  Minus,
 } from "lucide-react";
 import BarChart from "./components/BarChart";
+import useHook from "./useHook";
 
 export default function Dashboard() {
+  const { data } = useHook();
+  const barData = data?.monthly_overview ?? [];
   const kpiData = [
     {
       title: "Consent Forms",
-      value: "120",
+      value: data?.overview?.system_overview ?? 0,
       desc: "ทั้งหมดในระบบ",
-      icon: <FileText className="text-blue-500" size={22} />,
-      bgIcon: "bg-blue-100 dark:bg-blue-900/30",
-      trend: "+12%",
-      trendUp: true,
+      icon: <FileText className="text-zinc-500" size={22} />,
+      bgIcon: "bg-zinc-200 dark:bg-zinc-900/30",
+      trend: data?.percent?.system_overview?.percent ?? 0,
+      trendType: data?.percent?.system_overview?.trend,
     },
     {
       title: "Pending",
-      value: "32",
+      value: data?.overview?.pending_overview ?? 0,
       desc: "รอดำเนินการ",
       icon: (
         <Clock className="text-yellow-600 dark:text-yellow-500" size={22} />
       ),
       bgIcon: "bg-yellow-100 dark:bg-yellow-900/30",
-      trend: "+5%",
-      trendUp: true,
+      trend: data?.percent?.pending_overview?.percent ?? 0,
+      trendType: data?.percent?.pending_overview?.trend,
+    },
+    {
+      title: "Saved",
+      value: data?.overview?.save_overview ?? 0,
+      desc: "บันทึกแล้ว",
+      icon: <Save className="text-blue-500" size={22} />,
+      bgIcon: "bg-blue-100 dark:bg-blue-900/30",
+      trend: data?.percent?.save_overview?.percent ?? 0,
+      trendType: data?.percent?.save_overview?.trend,
     },
     {
       title: "Approved",
-      value: "78",
+      value: data?.overview?.success_overview ?? 0,
       desc: "อนุมัติแล้ว",
       icon: <CheckCircle2 className="text-emerald-500" size={22} />,
       bgIcon: "bg-emerald-100 dark:bg-emerald-900/30",
-      trend: "+18%",
-      trendUp: true,
+      trend: data?.percent?.success_overview?.percent ?? 0,
+      trendType: data?.percent?.success_overview?.trend,
     },
     {
       title: "Rejected",
-      value: "10",
+      value: data?.overview?.cancel_overview,
       desc: "ไม่อนุมัติ / ปฏิเสธ",
       icon: <XCircle className="text-rose-500" size={22} />,
       bgIcon: "bg-rose-100 dark:bg-rose-900/30",
-      trend: "-2%",
-      trendUp: false,
+      trend: data?.percent?.cancel_overview?.percent ?? 0,
+      trendType: data?.percent?.cancel_overview?.trend,
     },
   ];
 
@@ -203,7 +217,7 @@ export default function Dashboard() {
         </div>
 
         {/* KPI Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
           {kpiData.map((item, index) => (
             <div
               key={index}
@@ -224,14 +238,18 @@ export default function Dashboard() {
                     {item.title}
                   </p>
                   <div
-                    className={`flex items-center gap-0.5 text-[10px] font-medium ${item.trendUp ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"}`}
+                    className={`flex items-center gap-0.5 text-[10px] font-medium 
+  ${
+    item.trendType === "up"
+      ? "text-emerald-600 dark:text-emerald-400"
+      : item.trendType === "down"
+        ? "text-rose-600 dark:text-rose-400"
+        : "text-gray-400"
+  }`}
                   >
-                    {item.trendUp ? (
-                      <TrendingUp size={10} />
-                    ) : (
-                      <TrendingDown size={10} />
-                    )}
-                    <span>{item.trend}</span>
+                    {item.trendType === "up" && <TrendingUp size={10} />}
+                    {item.trendType === "down" && <TrendingDown size={10} />}
+                    <span>{item.trend}%</span>
                   </div>
                 </div>
               </div>
@@ -249,7 +267,7 @@ export default function Dashboard() {
             <CardHeader className="p-4 border-b border-gray-100 dark:border-neutral-800/50 flex justify-between items-center shrink-0">
               <div>
                 <h3 className="text-sm font-semibold text-neutral-800 dark:text-neutral-100">
-                  สถิติการดำเนินการ
+                  สถิติการดำเนินการ ปี {data?.year}
                 </h3>
                 <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
                   จำนวนฟอร์มในช่วงปัจจุปัน
@@ -266,7 +284,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardBody className="p-2 flex-1 min-h-0 overflow-hidden relative">
               <div className="absolute inset-2">
-                <BarChart />
+                <BarChart barData={barData} />
               </div>
             </CardBody>
           </Card>

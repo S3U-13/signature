@@ -1,6 +1,6 @@
 "use client";
 import * as z from "zod";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import React, { useEffect, useRef, useState } from "react";
 import { useApiRequest } from "@/hooks/useApi";
 import { addToast } from "@heroui/toast";
@@ -31,10 +31,11 @@ export default function useHook({ closeForm1, selectForm }) {
   const [visitId, setVisitId] = useState("");
   const [vitalsignList, setVitalSignList] = useState([]);
   const [vitalsignId, setVitalsignId] = useState("");
-  const [vitalsignData, setVitalsignData] = useState([]);
+  const [vitalsignData, setVitalsignData] = useState("");
   const [doDate, setDoDate] = useState(null);
   const [staff, setStaff] = useState([]);
   const [doctor, setDoctor] = useState([]);
+  const [isSign, setIsSign] = useState(false);
 
   useEffect(() => {
     if (didFetch.current) return; // check flag ก่อน
@@ -152,7 +153,7 @@ export default function useHook({ closeForm1, selectForm }) {
     }
     try {
       setIsSubmitting(true);
-      const data = await DoctorCreateForm(value);
+      const data = await DoctorCreateForm(value, isSign);
 
       if (data) {
         addToast({
@@ -169,6 +170,9 @@ export default function useHook({ closeForm1, selectForm }) {
         setVitalSignList([]);
         setVitalsignId("");
         setSignature(null);
+        setPat(null);
+        setVitalsignData("");
+        setDoDate(null);
         loadAll();
         closeForm1();
       } else if (!data) {
@@ -321,6 +325,10 @@ export default function useHook({ closeForm1, selectForm }) {
   //   console.log("vitalsign_list", vitalsignList);
   // }, [form, visitId, vitalsignList]);
 
+  const selectDoctor = useStore(form.store, (state) =>
+    Number(state.values.doctor_id),
+  );
+
   return {
     pat,
     modalRefSign,
@@ -357,5 +365,7 @@ export default function useHook({ closeForm1, selectForm }) {
     staff,
     doctor,
     doDate,
+    selectDoctor,
+    setIsSign,
   };
 }

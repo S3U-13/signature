@@ -74,12 +74,15 @@ export const useApiRequest = () => {
     );
   const FormListByHn = (searchFormByHn) =>
     apiRequest(`/api/user/form-radio-therapy-list/${searchFormByHn}`, "GET");
-  const DoctorCreateForm = async (value) => {
+  const DoctorCreateForm = async (value, isSign) => {
     try {
       const data = await apiRequest(
         "/api/user/create-form-radio-therapy",
         "POST",
-        value,
+        {
+          isSign,
+          ...value,
+        },
       );
       return data ?? null;
     } catch (error) {
@@ -184,6 +187,9 @@ export const useApiRequest = () => {
     return await res.blob(); // 👈 ใช้ blob เท่านั้น
   };
 
+  const dataDashboard = async () =>
+    await apiRequest("/api/user/dashboard", "GET");
+
   return {
     prenameApi,
     fetchForm,
@@ -212,5 +218,6 @@ export const useApiRequest = () => {
     fetchDoctor,
     fetchCountWarnPending,
     previewPDF,
+    dataDashboard,
   };
 };
