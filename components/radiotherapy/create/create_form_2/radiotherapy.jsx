@@ -10,12 +10,15 @@ import {
   ModalHeader,
 } from "@heroui/modal";
 import { Radio, RadioGroup } from "@heroui/radio";
-import React from "react";
-import useHook from "./useHook";
+import React, { useEffect, useState } from "react";
+import useHook from "./hook/useHook";
 import { Edit3, Search } from "@deemlol/next-icons";
 import Sign01 from "./signature01/page";
 import { Select, SelectItem } from "@heroui/select";
 import { parseDate } from "@internationalized/date";
+import useConfirmSignature from "./hook/confirmSignatureHook";
+import ModalApprove from "../../apporve_modal/modalApprove";
+import { Info } from "lucide-react";
 
 export default function RadiotherapyCreateModal({
   openForm2,
@@ -37,9 +40,84 @@ export default function RadiotherapyCreateModal({
     signature,
     staff,
     doctor,
+    selectDoctor,
+    user,
+    setIsSign,
   } = useHook({ closeForm2, selectForm });
+
+  const {
+    handleConfirmSignature,
+    setField,
+    signatureData,
+    setSignatureData,
+    loading: confirmLoading,
+  } = useConfirmSignature();
+
+  const [doctorSign, setDoctorSign] = useState(null);
+
+  useEffect(() => {
+    if (signatureData && signatureData.type) {
+      if (signatureData.type === "doctor") {
+        setDoctorSign(signatureData.signature || null);
+        setIsSign(true);
+      } else if (signatureData) {
+        setDoctorSign(null);
+        setIsSign(false);
+      }
+    }
+  }, [signatureData]);
+
+  useEffect(() => {
+    if (!openForm2 && setSignatureData) {
+      setSignatureData(null);
+    }
+  }, [openForm2, setSignatureData]);
+
+  const [confirmSignModal, setConfirmSignModal] = useState({
+    isOpen: false,
+    role: null,
+  });
+
+  const handleApproveSignature = async (confirmValue) => {
+    const success = await handleConfirmSignature(confirmValue);
+    if (success) {
+      setConfirmSignModal({ isOpen: false, role: null });
+      // if (typeof fetchData === "function") {
+      //   fetchData();
+      // }
+    }
+  };
+
+  const getFieldNameByRole = (role) => {
+    const map = {
+      staff: "staff_sign_id",
+      nurse: "nurse_sign_id",
+      doctor: "doctor_sign_id",
+    };
+    return map[role] || "";
+  };
+
+  useEffect(() => {
+    if (signatureData && user?.role) {
+      const fieldName = getFieldNameByRole(user.role);
+
+      if (fieldName) {
+        form.setFieldValue(fieldName, signatureData.id);
+      }
+    }
+  }, [signatureData, user?.role]);
+
+  const fieldName = getFieldNameByRole(user?.role);
+
+  const isApprove = selectDoctor === user?.doctorid ? true : false;
   return (
     <div>
+      <ModalApprove
+        isOpen={confirmSignModal.isOpen}
+        onClose={() => setConfirmSignModal({ isOpen: false, role: null })}
+        handleApproveSignature={handleApproveSignature}
+        loading={confirmLoading}
+      />
       <Modal
         size="5xl"
         isOpen={openForm2}
@@ -242,44 +320,6 @@ export default function RadiotherapyCreateModal({
                       จึงได้ลงลายมือชื่อไว้เป็นหลักฐาน
                     </span>
 
-                    {/* ผู้ป่วย */}
-                    {/* <div className="rounded-xl light:border light:border-gray-200 bg-[#f9f9f9] p-6 space-y-3 shadow-sm dark:bg-[#1f1e1e]">
-                      <span className="font-medium text-gray-700 dark:text-white text-sm">
-                        ผู้ป่วย / ตัวแทนผู้ป่วย
-                      </span>
-                      <div className="flex flex-wrap gap-3 items-center">
-                        <span className="text-sm flex items-center gap-2 text-default-700">
-                          ลงชื่อ{" "}
-                          {!signature ? (
-                            <span className="text-gray-400">
-                              .............................
-                            </span>
-                          ) : (
-                            <img
-                              src={signature}
-                              alt="signature"
-                              className="border border-gray-200 rounded-lg shadow w-[180px] h-[50px] object-contain bg-white"
-                            />
-                          )}
-                        </span>
-                        <Button
-                          size="sm"
-                          isIconOnly
-                          className="bg-neutral-900 text-white dark:bg-neutral-800 dark:hover:bg-neutral-700"
-                          variant="flat"
-                          onPress={() => setOpenSign01(true)}
-                        >
-                          <Edit3 className="size-5" />
-                        </Button>
-                      </div>
-                      <Input
-                        className="max-w-xs"
-                        size="sm"
-                        radius="sm"
-                        placeholder="ชื่อ-นามสกุล"
-                      />
-                    </div> */}
-
                     {/* แพทย์ */}
                     <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
@@ -287,8 +327,24 @@ export default function RadiotherapyCreateModal({
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
                           แพทย์
                         </span>
+                        {isApprove && (
+                          <div className="flex items-center justify-end gap-3">
+                            <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-700 flex items-center justify-center text-neutral-700 dark:text-neutral-300 shadow-sm border border-neutral-200 dark:border-neutral-600">
+                              <Info size={16} />
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+                                คุณต้องการใช้ลายเซ็นของคุณเลยหรือไม่
+                              </p>
+                              <p className="text-xs text-neutral-600 dark:text-neutral-400">
+                                (ถ้าคุณต้องการใช้ลายเซ็นของคุณ ให้กดปุ่มตรวจสอบ)
+                              </p>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="w-full">
+
+                      <div className="w-full flex justify-between items-center">
                         <form.Field name="doctor_id">
                           {(field) => (
                             <Select
@@ -317,11 +373,59 @@ export default function RadiotherapyCreateModal({
                             </Select>
                           )}
                         </form.Field>
+                        {isApprove && (
+                          <div className="w-full flex justify-end items-center gap-4">
+                            <div className="flex-shrink-0 flex items-center gap-3">
+                              <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
+                                ลงลายมือชื่อ
+                              </span>
+                              {!doctorSign ? (
+                                <div className="w-[180px] h-[50px] rounded-lg border-2 border-dashed border-gray-300 dark:border-neutral-700 flex items-center justify-center text-gray-400 dark:text-neutral-500 text-xs bg-gray-50 dark:bg-neutral-800/30">
+                                  รอการลงนาม
+                                </div>
+                              ) : (
+                                <img
+                                  src={doctorSign}
+                                  alt="doctor_signature"
+                                  className="border border-gray-200 dark:border-neutral-700 rounded-lg shadow-sm w-[180px] h-[50px] object-contain bg-white dark:bg-transparent"
+                                />
+                              )}
+                            </div>
+                            <Button
+                              size="sm"
+                              className="bg-neutral-900 text-white shadow-sm hover:bg-neutral-800 dark:bg-neutral-100 dark:text-neutral-900 dark:hover:bg-white font-medium"
+                              onPress={() => {
+                                setField({
+                                  userid: user?.userid,
+                                  doctorid: user?.doctorid,
+                                  role: "doctor",
+                                });
+                                setConfirmSignModal({
+                                  isOpen: true,
+                                  role: "doctor",
+                                });
+                              }}
+                            >
+                              ตรวจสอบ
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </div>
 
+                    {/* sign_id by role */}
+                    <form.Field name={fieldName}>
+                      {(field) => (
+                        <Input
+                          type="hidden"
+                          value={field.state.value ?? ""}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                      )}
+                    </form.Field>
+
                     {/* นักรังสีแพทย์ */}
-                    <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
+                    {/* <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
@@ -358,7 +462,7 @@ export default function RadiotherapyCreateModal({
                           )}
                         </form.Field>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* พยาน */}
                     {/* <div className="rounded-xl light:border light:border-gray-200 bg-[#f9f9f9] p-6 space-y-3 shadow-sm dark:bg-[#1f1e1e]">
@@ -375,7 +479,7 @@ export default function RadiotherapyCreateModal({
                     </div> */}
 
                     {/* พยาบาล */}
-                    <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
+                    {/* <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
@@ -412,8 +516,8 @@ export default function RadiotherapyCreateModal({
                           )}
                         </form.Field>
                       </div>
-                    </div>
-                    <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
+                    </div> */}
+                    {/* <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
@@ -450,7 +554,7 @@ export default function RadiotherapyCreateModal({
                           )}
                         </form.Field>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </section>
               </ModalBody>

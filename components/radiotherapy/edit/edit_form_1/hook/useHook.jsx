@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useApiRequest } from "@/hooks/useApi";
 import { useAuth } from "@/context/AuthContext";
 import { parseDate } from "@internationalized/date";
+import { useStore } from "@tanstack/react-form";
 
 export default function useHook({
   closeForm1,
@@ -154,6 +155,16 @@ export default function useHook({
         field: "doctor_sign_id",
       },
     ];
+    const userIdMap = [
+      {
+        value: String(patFormData?.data_form?.form?.staff_id),
+        field: "staff_id",
+      },
+      {
+        value: String(patFormData?.data_form?.form?.nurse_id),
+        field: "nurse_id",
+      },
+    ];
 
     form.setFieldValue(
       "date_form",
@@ -169,6 +180,11 @@ export default function useHook({
     });
 
     userSignIdMap.forEach(({ value, field }) => {
+      if (value) {
+        form.setFieldValue(field, value);
+      }
+    });
+    userIdMap.forEach(({ value, field }) => {
       if (value) {
         form.setFieldValue(field, value);
       }
@@ -217,6 +233,14 @@ export default function useHook({
     setSignature2(null);
   };
 
+  const selectStaff = useStore(form.store, (state) =>
+    Number(state.values.staff_id),
+  );
+
+  const selectNurse = useStore(form.store, (state) =>
+    Number(state.values.nurse_id),
+  );
+
   return {
     choice,
     //pat data and object
@@ -239,5 +263,7 @@ export default function useHook({
     user,
     doDate,
     parseDate,
+    selectStaff,
+    selectNurse,
   };
 }

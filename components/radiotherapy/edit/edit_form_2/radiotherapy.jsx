@@ -590,8 +590,8 @@ export default function RadiotherapyEditModal({
                             labelPlacement="outside-left"
                             placeholder="ระบุชื่อ-นามสกุล"
                             value={
-                              patFormData?.data_form?.staff_user[0]
-                                ?.person_name ?? ""
+                              patFormData?.data_form?.staff_user?.person_name ??
+                              ""
                             }
                             classNames={{
                               inputWrapper:
@@ -605,8 +605,7 @@ export default function RadiotherapyEditModal({
                             label="ตำแหน่ง"
                             labelPlacement="outside-left"
                             value={
-                              patFormData?.data_form?.staff_user[0]?.position ??
-                              ""
+                              patFormData?.data_form?.staff_user?.position ?? ""
                             }
                             placeholder="ระบุตำแหน่ง"
                             classNames={{
@@ -640,10 +639,10 @@ export default function RadiotherapyEditModal({
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
-                          พยาบาล
+                          แพทย์
                         </span>
                       </div>
-                      {patFormData?.data_form?.form?.nurse_id ===
+                      {patFormData?.data_form?.form?.doctor_userid ===
                         user?.userid && (
                         <div className="mt-2 flex items-center justify-between p-3.5 rounded-xl bg-neutral-100/80 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700/50">
                           <div className="flex items-center gap-3">
@@ -665,12 +664,13 @@ export default function RadiotherapyEditModal({
                             onPress={() => {
                               setField({
                                 userid: user?.userid,
-                                doctorid: null,
-                                role: "nurse",
+                                doctorid:
+                                  patFormData?.data_form?.form?.doctor_id,
+                                role: "doctor",
                               });
                               setConfirmSignModal({
                                 isOpen: true,
-                                role: "nurse",
+                                role: "doctor",
                               });
                             }}
                           >
@@ -686,8 +686,8 @@ export default function RadiotherapyEditModal({
                           label="ชื่อ-สกุล"
                           labelPlacement="outside-left"
                           value={
-                            patFormData?.data_form?.nurse_user?.[0]
-                              ?.person_name ?? ""
+                            patFormData?.data_form?.doctor_user?.person_name ??
+                            ""
                           }
                           isReadOnly
                           classNames={{
@@ -699,14 +699,14 @@ export default function RadiotherapyEditModal({
                           <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
                             ลงลายมือชื่อ
                           </span>
-                          {!nurseSign ? (
+                          {!doctorSign ? (
                             <div className="w-[180px] h-[50px] rounded-lg border-2 border-dashed border-gray-300 dark:border-neutral-700 flex items-center justify-center text-gray-400 dark:text-neutral-500 text-xs bg-gray-50 dark:bg-neutral-800/30">
                               รอการลงนาม
                             </div>
                           ) : (
-                            <img
-                              src={nurseSign}
-                              alt="nurse_signature"
+                            <Image
+                              src={doctorSign}
+                              alt="signature"
                               className="border border-gray-200 dark:border-neutral-700 rounded-lg shadow-sm w-[180px] h-[50px] object-contain bg-white dark:bg-transparent"
                             />
                           )}

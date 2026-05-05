@@ -523,6 +523,7 @@ export default function Page() {
               const value = Array.from(keys)[0];
               setLimit(Number(value));
             }}
+            aria-label="limit"
           >
             {limitData.map((i) => (
               <SelectItem key={i.key}>{i.key}</SelectItem>

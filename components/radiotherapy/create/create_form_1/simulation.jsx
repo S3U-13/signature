@@ -27,6 +27,14 @@ export default function SimulationCreateModal({
   selectForm,
 }) {
   const {
+    handleConfirmSignature,
+    setField,
+    signatureData,
+    setSignatureData,
+    loading: confirmLoading,
+  } = useConfirmSignature();
+
+  const {
     hnInput,
     setHnInput,
     handleSearchHn,
@@ -55,15 +63,7 @@ export default function SimulationCreateModal({
     doctor,
     doDate,
     setIsSign,
-  } = useHook({ closeForm1, selectForm });
-
-  const {
-    handleConfirmSignature,
-    setField,
-    signatureData,
-    setSignatureData,
-    loading: confirmLoading,
-  } = useConfirmSignature();
+  } = useHook({ closeForm1, selectForm, setSignatureData });
 
   const [doctorSign, setDoctorSign] = useState(null);
 
@@ -73,6 +73,9 @@ export default function SimulationCreateModal({
         setDoctorSign(signatureData.signature || null);
         setIsSign(true);
       }
+    } else if (!signatureData) {
+      setDoctorSign(null);
+      setIsSign(false);
     }
   }, [signatureData]);
 
@@ -96,6 +99,27 @@ export default function SimulationCreateModal({
       // }
     }
   };
+
+  const getFieldNameByRole = (role) => {
+    const map = {
+      staff: "staff_sign_id",
+      nurse: "nurse_sign_id",
+      doctor: "doctor_sign_id",
+    };
+    return map[role] || "";
+  };
+
+  useEffect(() => {
+    if (signatureData && user?.role) {
+      const fieldName = getFieldNameByRole(user.role);
+
+      if (fieldName) {
+        form.setFieldValue(fieldName, signatureData.id);
+      }
+    }
+  }, [signatureData, user?.role]);
+
+  const fieldName = getFieldNameByRole(user?.role);
 
   const isApprove = selectDoctor === user?.doctorid ? true : false;
 
@@ -478,7 +502,18 @@ export default function SimulationCreateModal({
                       </div>
                     </div>
 
-                    {/* นักรังสีแพทย์ */}
+                    {/* sign_id by role */}
+                    <form.Field name={fieldName}>
+                      {(field) => (
+                        <Input
+                          type="hidden"
+                          value={field.state.value ?? ""}
+                          onChange={(e) => field.handleChange(e.target.value)}
+                        />
+                      )}
+                    </form.Field>
+
+                    {/* นักรังสีแพทย์
                     <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
@@ -516,7 +551,7 @@ export default function SimulationCreateModal({
                           )}
                         </form.Field>
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* พยาน */}
                     {/* <div className="rounded-xl light:border light:border-gray-200 bg-[#f9f9f9] p-6 space-y-3 shadow-sm dark:bg-[#1f1e1e]">
@@ -533,7 +568,7 @@ export default function SimulationCreateModal({
                     </div> */}
 
                     {/* พยาบาล */}
-                    <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
+                    {/* <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
                       <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
                         <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
@@ -608,7 +643,7 @@ export default function SimulationCreateModal({
                           )}
                         </form.Field>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div className="pt-2 flex justify-end">
                       <form.Field name="date_form">

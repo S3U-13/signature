@@ -24,6 +24,7 @@ import { Checkbox, CheckboxGroup } from "@heroui/checkbox";
 import { Image } from "@heroui/image";
 import fieldAndHandleHook from "./hook/fieldAndHandleHook";
 import useConfirmSignature from "./hook/confirmSignatureHook";
+import loadStaff from "@/utils/loadStaff";
 
 export default function SimulationEditModal({
   patFormData,
@@ -33,6 +34,7 @@ export default function SimulationEditModal({
   selectIdForm,
   fetchData,
 }) {
+  const { staff } = loadStaff();
   const {
     form,
     selectedDisease,
@@ -103,6 +105,21 @@ export default function SimulationEditModal({
     }
   };
 
+  const [lockStaff, setLockStaff] = useState(null);
+  const [lockNurse, setLockNurse] = useState(null);
+
+  useEffect(() => {
+    if (!patFormData?.form_actions) return;
+
+    patFormData.form_actions.forEach((item) => {
+      if (item.role === "staff") {
+        setLockStaff({ id: item.userid, lock: item.lock });
+      } else if (item.role === "nurse") {
+        setLockNurse({ id: item.userid, lock: item.lock });
+      }
+    });
+  }, [patFormData]);
+
   const {
     choice,
     //pat data object
@@ -125,6 +142,8 @@ export default function SimulationEditModal({
     user,
     doDate,
     parseDate,
+    selectStaff,
+    selectNurse,
   } = useHook({
     closeForm1,
     patFormData,
@@ -164,6 +183,10 @@ export default function SimulationEditModal({
   //   { key: "2", label: "นาง" },
   //   { key: "3", label: "นางสาว" },
   // ];
+
+  const isStaffApprove = selectStaff === user?.userid;
+  const isNurseApprove = selectNurse === user?.userid;
+
   return (
     <div>
       <Modal
@@ -790,8 +813,9 @@ export default function SimulationEditModal({
                           นักรังสีแพทย์
                         </span>
                       </div>
-                      {patFormData?.data_form?.form?.staff_id ===
-                        user?.userid && (
+                      {(patFormData?.data_form?.form?.staff_id ===
+                        user?.userid ||
+                        isStaffApprove) && (
                         <div className="mt-2 flex items-center justify-between p-3.5 rounded-xl bg-neutral-100/80 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700/50">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-700 flex items-center justify-center text-neutral-700 dark:text-neutral-300 shadow-sm border border-neutral-200 dark:border-neutral-600">
@@ -826,22 +850,39 @@ export default function SimulationEditModal({
                         </div>
                       )}
                       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between">
-                        <Input
-                          className="max-w-[300px]"
-                          size="sm"
-                          radius="sm"
-                          label="ชื่อ-สกุล"
-                          labelPlacement="outside-left"
-                          value={
-                            patFormData?.data_form?.staff_user?.[0]
-                              ?.person_name ?? ""
-                          }
-                          isReadOnly
-                          classNames={{
-                            inputWrapper:
-                              "shadow-none border border-gray-200/80 dark:border-neutral-700/80 bg-gray-50/50 dark:bg-neutral-900/50",
-                          }}
-                        />
+                        <form.Field name="staff_id">
+                          {(field) => (
+                            <Select
+                              label="กรุณาเลือกนักรังสีแพทย์เพื่อขออนุญาตใช้ลายเซ็น"
+                              className="w-full max-w-[500px]"
+                              size="sm"
+                              radius="sm"
+                              placeholder=""
+                              selectedKeys={
+                                field.state.value ? [field.state.value] : []
+                              }
+                              onSelectionChange={(keys) => {
+                                const value = Array.from(keys)[0];
+                                field.handleChange(value);
+                              }}
+                              classNames={{
+                                trigger:
+                                  "shadow-none border border-gray-200/80 dark:border-neutral-700/80 bg-gray-50/50 dark:bg-neutral-900/50 hover:bg-white dark:hover:bg-neutral-800",
+                              }}
+                              isDisabled={
+                                !lockStaff || lockStaff?.lock === "n"
+                                  ? false
+                                  : true
+                              }
+                            >
+                              {staff?.map((item) => (
+                                <SelectItem key={String(item.userid)}>
+                                  {`${item?.person_name} ${item?.position}`}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                          )}
+                        </form.Field>
                         <div className="flex-shrink-0 flex items-center gap-3">
                           <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
                             ลงลายมือชื่อ
@@ -917,8 +958,9 @@ export default function SimulationEditModal({
                           พยาบาล
                         </span>
                       </div>
-                      {patFormData?.data_form?.form?.nurse_id ===
-                        user?.userid && (
+                      {(patFormData?.data_form?.form?.nurse_id ===
+                        user?.userid ||
+                        isNurseApprove) && (
                         <div className="mt-2 flex items-center justify-between p-3.5 rounded-xl bg-neutral-100/80 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700/50">
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-white dark:bg-neutral-700 flex items-center justify-center text-neutral-700 dark:text-neutral-300 shadow-sm border border-neutral-200 dark:border-neutral-600">
@@ -953,22 +995,39 @@ export default function SimulationEditModal({
                         </div>
                       )}
                       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-start sm:items-center justify-between">
-                        <Input
-                          className="max-w-[300px]"
-                          size="sm"
-                          radius="sm"
-                          label="ชื่อ-สกุล"
-                          labelPlacement="outside-left"
-                          value={
-                            patFormData?.data_form?.nurse_user?.[0]
-                              ?.person_name ?? ""
-                          }
-                          isReadOnly
-                          classNames={{
-                            inputWrapper:
-                              "shadow-none border border-gray-200/80 dark:border-neutral-700/80 bg-gray-50/50 dark:bg-neutral-900/50",
-                          }}
-                        />
+                        <form.Field name="nurse_id">
+                          {(field) => (
+                            <Select
+                              label="กรุณาเลือกพยาบาลเพื่อขออนุญาตใช้ลายเซ็น"
+                              className="w-full max-w-[500px]"
+                              size="sm"
+                              radius="sm"
+                              placeholder=""
+                              selectedKeys={
+                                field.state.value ? [field.state.value] : []
+                              }
+                              onSelectionChange={(keys) => {
+                                const value = Array.from(keys)[0];
+                                field.handleChange(value);
+                              }}
+                              classNames={{
+                                trigger:
+                                  "shadow-none border border-gray-200/80 dark:border-neutral-700/80 bg-gray-50/50 dark:bg-neutral-900/50 hover:bg-white dark:hover:bg-neutral-800",
+                              }}
+                              isDisabled={
+                                !lockNurse || lockNurse?.lock === "n"
+                                  ? false
+                                  : true
+                              }
+                            >
+                              {staff?.map((item) => (
+                                <SelectItem key={String(item.userid)}>
+                                  {`${item?.person_name} ${item?.position}`}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                          )}
+                        </form.Field>
                         <div className="flex-shrink-0 flex items-center gap-3">
                           <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
                             ลงลายมือชื่อ
@@ -987,6 +1046,7 @@ export default function SimulationEditModal({
                         </div>
                       </div>
                     </div>
+                    {/* sign_id by role */}
                     <form.Field name={fieldName}>
                       {(field) => (
                         <Input
@@ -996,6 +1056,45 @@ export default function SimulationEditModal({
                         />
                       )}
                     </form.Field>
+
+                    {/* <div className="rounded-xl border border-gray-200/80 dark:border-neutral-800/80 bg-white dark:bg-[#131317]/50 p-5 sm:p-6 space-y-4 shadow-sm hover:border-gray-300 dark:hover:border-neutral-700 transition-all relative">
+                      <div className="pb-3 border-b border-gray-100 dark:border-neutral-800/80 flex items-center justify-between">
+                        <span className="font-semibold text-gray-800 dark:text-gray-200 text-[15px] flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-neutral-600"></div>
+                          ผู้ตรวจสอบ
+                        </span>
+                      </div>
+                      <div className="w-full">
+                        <form.Field name="viewer">
+                          {(field) => (
+                            <Select
+                              label="กรุณาเลือกผู้ตรวจสอบ"
+                              className="w-full max-w-[500px]"
+                              size="sm"
+                              radius="sm"
+                              placeholder=""
+                              selectedKeys={
+                                field.state.value ? [field.state.value] : []
+                              }
+                              onSelectionChange={(keys) => {
+                                const value = Array.from(keys)[0];
+                                field.handleChange(value);
+                              }}
+                              classNames={{
+                                trigger:
+                                  "shadow-none border border-gray-200/80 dark:border-neutral-700/80 bg-gray-50/50 dark:bg-neutral-900/50 hover:bg-white dark:hover:bg-neutral-800",
+                              }}
+                            >
+                              {staff?.map((item) => (
+                                <SelectItem key={String(item.userid)}>
+                                  {`${item?.person_name} ${item?.position}`}
+                                </SelectItem>
+                              ))}
+                            </Select>
+                          )}
+                        </form.Field>
+                      </div>
+                    </div> */}
 
                     <div className="pt-2 flex justify-end">
                       <form.Field name="date_form">

@@ -16,6 +16,7 @@ export default function fieldAndHandleHook({
   const modalRefSign = useRef(null);
   const [signature, setSignature] = useState(null);
   const [signature2, setSignature2] = useState(null);
+
   const Field = () => ({
     form_type_id: null,
     hn: null,
@@ -35,18 +36,18 @@ export default function fieldAndHandleHook({
     seafood_allergy_id: null,
     seafood_allergy_symptom: "",
     patient_sign: "",
-    patient_sign_date: null,
+
     witness_name: "",
     witness_sign: "",
-    witness_sign_date: null,
+
     staff_id: null,
     staff_posid: null,
     staff_sign_id: null,
-    staff_sign_date: null,
     nurse_id: null,
     nurse_sign_id: null,
-    nurse_sign_date: null,
     doctor_sign_id: null,
+
+    viewer: null,
     //staff note
     cr: "",
     egfr: "",
@@ -77,18 +78,19 @@ export default function fieldAndHandleHook({
     drug_allergy_id: z.string().nullable(),
     drug: z.string().optional(),
     patient_sign: z.string().optional(),
-    patient_sign_date: z.string().nullable(),
+
     witness_sign_name: z.string().optional(),
     witness_sign: z.string().optional(),
-    witness_sign_date: z.string().nullable(),
-    staff_id: z.number().nullable(),
+
+    staff_id: z.string().nullable(),
     staff_sign_id: z.number().nullable(),
-    staff_sign_date: z.string().nullable(),
-    nurse_id: z.number().nullable(),
+
+    nurse_id: z.string().nullable(),
     nurse_sign_id: z.number().nullable(),
-    nurse_sign_date: z.string().nullable(),
+
     doctor_sign_id: z.number().nullable(),
     staff_posid: z.number().nullable(),
+    viewer: z.string().nullable(),
 
     //staff note
     cr: z.string().optional(),

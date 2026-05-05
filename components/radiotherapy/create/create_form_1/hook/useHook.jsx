@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useWarn } from "@/context/WarnContext";
 import { parseDate } from "@internationalized/date";
 
-export default function useHook({ closeForm1, selectForm }) {
+export default function useHook({ closeForm1, selectForm, setSignatureData }) {
   const { user } = useAuth();
   const {
     SearchHn,
@@ -105,12 +105,12 @@ export default function useHook({ closeForm1, selectForm }) {
     visit_id: null,
     vitalsign_id: null,
     pat_age: "",
-    doctor_sign: "",
     doctor_id: null,
     staff_id: null,
     nurse_id: null,
     viewer: null,
     date_form: null,
+    doctor_sign_id: null,
   });
 
   const [field, setField] = useState(initialField());
@@ -122,7 +122,7 @@ export default function useHook({ closeForm1, selectForm }) {
     hn: z.coerce.number().nullable(),
     visit_id: z.coerce.number().nullable(),
     vitalsign_id: z.coerce.number().nullable(),
-    doctor_sign: z.string().optional(),
+    doctor_sign_id: z.number().nullable(),
     doctor_id: z.string().nullable(),
     staff_id: z.string().nullable(),
     nurse_id: z.string().nullable(),
@@ -173,6 +173,7 @@ export default function useHook({ closeForm1, selectForm }) {
         setPat(null);
         setVitalsignData("");
         setDoDate(null);
+        setSignatureData(null);
         loadAll();
         closeForm1();
       } else if (!data) {

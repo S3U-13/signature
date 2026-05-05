@@ -1,12 +1,14 @@
 "use client";
 import * as z from "zod";
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import React, { useEffect, useRef, useState } from "react";
 import { useApiRequest } from "@/hooks/useApi";
 import { addToast } from "@heroui/toast";
 import { useWarn } from "@/context/WarnContext";
+import { useAuth } from "@/context/AuthContext";
 
 export default function useHook({ closeForm3, selectForm }) {
+  const { user } = useAuth();
   const { loadAll } = useWarn();
   const didFetch = useRef(false); // 🔑 flag ป้องกันเบิ้ล
   const { SearchHn, DoctorCreateForm, staffList, fetchDoctor } =
@@ -20,6 +22,7 @@ export default function useHook({ closeForm3, selectForm }) {
   const [pat, setPat] = useState(null);
   const [staff, setStaff] = useState([]);
   const [doctor, setDoctor] = useState([]);
+  const [isSign, setIsSign] = useState(false);
 
   useEffect(() => {
     if (didFetch.current) return; // check flag ก่อน
@@ -80,7 +83,7 @@ export default function useHook({ closeForm3, selectForm }) {
     pat_name: "",
     hn: null,
     pat_age: "",
-    doctor_sign: "",
+    doctor_sign_id: null,
     doctor_id: null,
     staff_id: null,
     nurse_id: null,
@@ -95,7 +98,7 @@ export default function useHook({ closeForm3, selectForm }) {
   const validationSchema = z.object({
     form_type_id: z.number().nullable(),
     hn: z.coerce.number().nullable(),
-    doctor_sign: z.string().optional(),
+    doctor_sign_id: z.number().nullable(),
     doctor_id: z.string().nullable(),
     staff_id: z.string().nullable(),
     nurse_id: z.string().nullable(),
@@ -126,7 +129,7 @@ export default function useHook({ closeForm3, selectForm }) {
     }
     try {
       setIsSubmitting(true);
-      const data = await DoctorCreateForm(value);
+      const data = await DoctorCreateForm(value, isSign);
 
       if (data) {
         addToast({
@@ -199,6 +202,10 @@ export default function useHook({ closeForm3, selectForm }) {
     }
   }, [selectForm]);
 
+  const selectDoctor = useStore(form.store, (state) =>
+    Number(state.values.doctor_id),
+  );
+
   return {
     modalRefSign,
     openSign01,
@@ -217,5 +224,8 @@ export default function useHook({ closeForm3, selectForm }) {
     isSubmitting,
     staff,
     doctor,
+    selectDoctor,
+    user,
+    setIsSign,
   };
 }

@@ -522,6 +522,7 @@ export default function page() {
         {/* RIGHT */}
         <div className="flex gap-2">
           <Select
+            aria-label="limit"
             className="w-18"
             size="sm"
             selectedKeys={[String(limit)]}
